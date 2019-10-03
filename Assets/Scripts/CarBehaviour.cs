@@ -4,21 +4,41 @@ using UnityEngine;
 
 public class CarBehaviour : MonoBehaviour
 {
+    // top level transforms
+    private Transform sphere;
+    private Transform car;
+
+    // control vars
     public float maxTurnRate;
     public float accelForce;
     public float requiredTurningVelocity;
-    public Transform tiltablePiece;
-    public Transform sphere;
-    public Transform car;
+    
+    // chassis tilting vars
     public float maxTopTilt;
     public float topTiltDelta;
+    public float maxTiltSpeed;
+    private Transform chassis;
 
+    // wheel vars
+    public float frontWheelTurnAngle;
+    public float wheelTurnDelta;
+    private Transform leftFrontWheel;
+    private Transform rightFrontWheel;
+
+    // misc privates
     private Vector3 offset;
     private Rigidbody sphereRB;
 
     // Start is called before the first frame update
     void Start()
     {
+        // transforms
+        sphere = transform.Find("Sphere");
+        car = transform.Find("Model");
+        chassis = car.Find("Chassis");
+        leftFrontWheel = car.Find("Front Left");
+        rightFrontWheel = car.Find("Front Right");
+
         offset = car.position - sphere.position;
         sphereRB = sphere.GetComponent<Rigidbody>();
     }
@@ -36,12 +56,6 @@ public class CarBehaviour : MonoBehaviour
     {
         // steering
         float horizontalInput = Input.GetAxisRaw("Horizontal");
-        /*
-        if (Vector3.Dot(car.forward, sphereRB.velocity) >= 0)
-        {
-            horizontalInput *= -1;
-        }
-        */
 
         float turnRate = maxTurnRate * Mathf.Clamp(sphereRB.velocity.magnitude / requiredTurningVelocity, 0, maxTurnRate);
 
@@ -55,8 +69,14 @@ public class CarBehaviour : MonoBehaviour
             car.forward = Quaternion.AngleAxis(horizontalInput * -1 * turnRate * Time.deltaTime, Vector3.up) * car.forward;
         }
 
-        // animating model
-        Quaternion topTargetRot = Quaternion.AngleAxis(horizontalInput * (turnRate / maxTurnRate) * maxTopTilt, Vector3.forward);
-        tiltablePiece.localRotation = Quaternion.RotateTowards(tiltablePiece.localRotation, topTargetRot, topTiltDelta * Time.deltaTime);
+        // animating car chassis
+        float perpendicularSpeed = -Vector3.Dot(car.right, sphereRB.velocity);
+        Quaternion topTargetRot = Quaternion.AngleAxis((perpendicularSpeed / maxTiltSpeed) * maxTopTilt, Vector3.forward);
+        chassis.localRotation = Quaternion.RotateTowards(chassis.localRotation, topTargetRot, topTiltDelta * Time.deltaTime);
+
+        // animating tires
+        Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * horizontalInput, Vector3.up);
+        rightFrontWheel.localRotation = leftFrontWheel.localRotation
+            = Quaternion.RotateTowards(leftFrontWheel.localRotation, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
     }
 }
