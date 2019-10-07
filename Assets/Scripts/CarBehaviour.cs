@@ -25,6 +25,11 @@ public class CarBehaviour : MonoBehaviour
     private Transform leftFrontWheel;
     private Transform rightFrontWheel;
 
+    // particle systems
+    public float minSmokeSpeed;
+    private ParticleSystem[] particleSystems;
+    private bool particlesPlaying;
+
     // misc privates
     private Vector3 offset;
     private Rigidbody sphereRB;
@@ -36,11 +41,15 @@ public class CarBehaviour : MonoBehaviour
         sphere = transform.Find("Sphere");
         car = transform.Find("Model");
         chassis = car.Find("Chassis");
-        leftFrontWheel = car.Find("Front Left");
-        rightFrontWheel = car.Find("Front Right");
+        leftFrontWheel = car.Find("Front Left Tire");
+        rightFrontWheel = car.Find("Front Right Tire");
 
         offset = car.position - sphere.position;
         sphereRB = sphere.GetComponent<Rigidbody>();
+
+        // particle systems
+        particleSystems = GetComponentsInChildren<ParticleSystem>();
+        particlesPlaying = false;
     }
 
     void FixedUpdate()
@@ -78,5 +87,24 @@ public class CarBehaviour : MonoBehaviour
         Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * horizontalInput, Vector3.up);
         rightFrontWheel.localRotation = leftFrontWheel.localRotation
             = Quaternion.RotateTowards(leftFrontWheel.localRotation, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
+
+        // apply smoke effects
+        bool shouldSmoke = Mathf.Abs(perpendicularSpeed) > minSmokeSpeed;
+        if (!particlesPlaying && shouldSmoke)
+        {
+            foreach (ParticleSystem p in particleSystems)
+            {
+                p.Play();
+            }
+            particlesPlaying = true;
+        }
+        else if (particlesPlaying && !shouldSmoke)
+        {
+            foreach (ParticleSystem p in particleSystems)
+            {
+                p.Stop();
+            }
+            particlesPlaying = false;
+        }
     }
 }
