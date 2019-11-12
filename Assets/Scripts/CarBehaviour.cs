@@ -8,6 +8,12 @@ public class CarBehaviour : MonoBehaviour
     private Transform sphere;
     private Transform car;
 
+    // input vars
+    [HideInInspector]
+    public float turnInput;
+    [HideInInspector]
+    public float accelerationInput;
+
     // control vars
     public float maxTurnRate;
     public float accelForce;
@@ -54,28 +60,24 @@ public class CarBehaviour : MonoBehaviour
 
     void FixedUpdate()
     {
-        float verticalInput = Input.GetAxisRaw("Vertical");
-
-        Vector3 input = car.forward * verticalInput;
-
+        // acceleration
+        Vector3 input = car.forward * accelerationInput;
         sphereRB.AddForce(input * accelForce, ForceMode.Acceleration);
     }
 
     void Update()
     {
         // steering
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-
         float turnRate = maxTurnRate * Mathf.Clamp(sphereRB.velocity.magnitude / requiredTurningVelocity, 0, maxTurnRate);
 
         car.position = sphere.position + offset;
         if (Vector3.Dot(car.forward, sphereRB.velocity) >= 0)
         {
-            car.forward = Quaternion.AngleAxis(horizontalInput * turnRate * Time.deltaTime, Vector3.up) * car.forward;
+            car.forward = Quaternion.AngleAxis(turnInput * turnRate * Time.deltaTime, Vector3.up) * car.forward;
         }
         else
         {
-            car.forward = Quaternion.AngleAxis(horizontalInput * -1 * turnRate * Time.deltaTime, Vector3.up) * car.forward;
+            car.forward = Quaternion.AngleAxis(turnInput * -1 * turnRate * Time.deltaTime, Vector3.up) * car.forward;
         }
 
         // animating car chassis
@@ -84,7 +86,7 @@ public class CarBehaviour : MonoBehaviour
         chassis.localRotation = Quaternion.RotateTowards(chassis.localRotation, topTargetRot, topTiltDelta * Time.deltaTime);
 
         // animating tires
-        Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * horizontalInput, Vector3.up);
+        Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * turnInput, Vector3.up);
         rightFrontWheel.localRotation = leftFrontWheel.localRotation
             = Quaternion.RotateTowards(leftFrontWheel.localRotation, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
 

@@ -11,13 +11,11 @@ public class CameraTrack : MonoBehaviour
     private Vector3 offset;
     private Vector3 refVelocity;
 
-    // Start is called before the first frame update
     void Start()
     {
         offset = transform.position;
     }
 
-    // Update is called once per frame
     void LateUpdate()
     {
         Vector3 predictedPos = toTrack.position + toTrack.velocity * predictionTime;

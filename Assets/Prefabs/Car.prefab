@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a6054c679f60e4b9165b268c9231db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnInput: 0
+  accelerationInput: 0
   maxTurnRate: 110
   accelForce: 30
   requiredTurningVelocity: 6
