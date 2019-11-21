@@ -7,7 +7,7 @@ public class Path : MonoBehaviour
 {
     public List<Transform> nodes;
 
-    public PathPointInfo findClosestLeadingPoint(Vector3 point, float leadDistance)
+    public PathPointInfo FindClosestLeadingPoint(Vector3 point, float leadDistance)
     {
         Vector3 closestPoint = Vector3.zero;
         Vector3 forward = Vector3.zero;
