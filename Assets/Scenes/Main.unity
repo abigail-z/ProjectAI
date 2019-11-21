@@ -2484,12 +2484,7 @@ PrefabInstance:
     - target: {fileID: 3937480830234271444, guid: 6be11f0c78d162d44aacba4d2172dc7b,
         type: 3}
       propertyPath: m_Name
-      value: Player Car
-      objectReference: {fileID: 0}
-    - target: {fileID: 3937480830246137303, guid: 6be11f0c78d162d44aacba4d2172dc7b,
-        type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
+      value: Car
       objectReference: {fileID: 0}
     - target: {fileID: 3937480830234271443, guid: 6be11f0c78d162d44aacba4d2172dc7b,
         type: 3}
@@ -2545,11 +2540,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3942321552188358097, guid: 6be11f0c78d162d44aacba4d2172dc7b,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6be11f0c78d162d44aacba4d2172dc7b, type: 3}
