@@ -212,7 +212,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node 1
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -393,6 +393,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 134537252}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &195158149 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3942321552188358097, guid: 6be11f0c78d162d44aacba4d2172dc7b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3937480829960423655}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &264357320 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: f1b3a74ba307941a8bddf1f1317dc50f,
@@ -519,7 +525,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node 3
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -832,6 +838,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path: {fileID: 2052532385}
+  car: {fileID: 195158149}
 --- !u!1 &739788003
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,7 +852,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node 2
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1872,7 +1879,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node 0
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

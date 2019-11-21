@@ -48,7 +48,6 @@ public class Path : MonoBehaviour
                 float overrunDistance = distanceOnLine + leadDistance - lineLength;
                 lineDir = (nextNode - endNode).normalized;
                 leadingPoint = endNode + lineDir * overrunDistance;
-                Debug.Log(i); // REMOVE
             }
             else
             {
