@@ -40,8 +40,7 @@ public class CarBehaviour : MonoBehaviour
     private Vector3 offset;
     private Rigidbody sphereRB;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // transforms
         sphere = transform.Find("Sphere");
