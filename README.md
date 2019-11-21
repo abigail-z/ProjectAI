@@ -1,7 +1,3 @@
 # ProjectAI
 
-It's a car
-
-WASD to move it
-
-At some point it's supposed to be an AI project but it isn't yet.
+Car avoids walls and navigates through a small race track.
