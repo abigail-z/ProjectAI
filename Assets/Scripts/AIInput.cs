@@ -41,7 +41,6 @@ public class AIInput : MonoBehaviour
             if (Physics.Raycast(carPos, intersect - carPos, maxDistance, wallMask)
                 || Physics.SphereCast(carPos, 1, intersect - carPos, out RaycastHit _, maxDistance, wallMask))
             {
-                Debug.Log("Wall!");
                 // going to hit a wall, time to correct
                 // turn toward the goal point
                 float dir = Vector3.Dot(car.right, ppi.point - carPos);
