@@ -24,7 +24,7 @@ public class AIInput : MonoBehaviour
         behaviour.turnInput = 0;
 
         // find path goal point and vector perpendicular to track direction
-        PathPointInfo ppi = path.FindClosestLeadingPoint(car.position, 5);
+        PathPointInfo ppi = path.FindClosestLeadingPoint(car.position, 10);
         Vector3 perpendicular = new Vector3(ppi.direction.z, 0, -ppi.direction.x);
 
         // grab the car's origin point to raycast from
@@ -91,9 +91,9 @@ public class AIInput : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
-        PathPointInfo ppi = path.FindClosestLeadingPoint(car.position, 5);
+        PathPointInfo ppi = path.FindClosestLeadingPoint(car.position, 10);
         Vector3 perpendicular = new Vector3(ppi.direction.z, 0, -ppi.direction.x);
 
         Vector3 intersect = GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
