@@ -8,9 +8,9 @@ public class AIInput : MonoBehaviour
     public float fallbackRaycastDistance;
     public Path path;
     public Transform car;
+    public float carRadius;
     public CarBehaviour behaviour;
     private LayerMask wallMask;
-    private float wander;
 
     void Awake()
     {
@@ -47,7 +47,6 @@ public class AIInput : MonoBehaviour
                 if (dir != 0)
                 {
                     behaviour.turnInput = dir / Mathf.Abs(dir);
-                    wander = 0;
                     return;
                 }
             }
@@ -67,15 +66,13 @@ public class AIInput : MonoBehaviour
                 if (dir != 0)
                 {
                     behaviour.turnInput = dir / Mathf.Abs(dir);
-                    wander = 0;
                     return;
                 }
             }
         }
 
         // if we get here without returning, apply random wander
-        behaviour.turnInput = wander;
-        wander += Random.Range(-1f, 1f) * Time.fixedDeltaTime;
+        behaviour.turnInput += Random.Range(-1f, 1f) * Time.fixedDeltaTime;
     }
 
     public Vector3 GetLineIntersectionPoint(Vector3 A1, Vector3 A2, Vector3 B1, Vector3 B2, out bool found)
@@ -106,6 +103,7 @@ public class AIInput : MonoBehaviour
         PathPointInfo ppi = path.FindClosestLeadingPoint(car.position, guidePointDistance);
         Vector3 perpendicular = new Vector3(ppi.direction.z, 0, -ppi.direction.x);
 
+        // draw goal point feeler
         Vector3 intersect = GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
         if (found)
         {
@@ -115,9 +113,11 @@ public class AIInput : MonoBehaviour
             Gizmos.DrawWireSphere(intersect, 0.1f);
         }
 
+        // draw steering input
         Gizmos.color = Color.green;
         Gizmos.DrawLine(car.position, car.position + behaviour.turnInput * car.right * 5);
 
+        // draw goal point
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(ppi.point, 0.25f);
         Gizmos.DrawLine(ppi.point, ppi.point + ppi.direction);

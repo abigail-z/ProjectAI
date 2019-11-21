@@ -6,6 +6,7 @@ using System;
 public class Path : MonoBehaviour
 {
     public List<Transform> nodes;
+    public float width;
 
     public PathPointInfo FindClosestLeadingPoint(Vector3 point, float leadDistance)
     {
@@ -93,6 +94,8 @@ public class Path : MonoBehaviour
             Gizmos.DrawLine(currentNode, nextNode);
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(currentNode, Vector3.one * 0.25f);
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(currentNode, width);
         }
     }
 #endif
