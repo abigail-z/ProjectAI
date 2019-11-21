@@ -38,8 +38,10 @@ public class AIInput : MonoBehaviour
             // raycast to the intersect between the goal line and forward line
             intersect.y = ppi.point.y;
             float maxDistance = (intersect - carPos).magnitude;
-            if (Physics.SphereCast(carPos, 1, intersect - carPos, out RaycastHit _, maxDistance, wallMask))
+            if (Physics.Raycast(carPos, intersect - carPos, maxDistance, wallMask)
+                || Physics.SphereCast(carPos, 1, intersect - carPos, out RaycastHit _, maxDistance, wallMask))
             {
+                Debug.Log("Wall!");
                 // going to hit a wall, time to correct
                 // turn toward the goal point
                 float dir = Vector3.Dot(car.right, ppi.point - carPos);
@@ -57,7 +59,8 @@ public class AIInput : MonoBehaviour
             Debug.Log("No intersection found, using fallback raycast.");
 #endif
             // raycast the max distance
-            if (Physics.SphereCast(carPos, 1, car.forward, out RaycastHit _, fallbackRaycastDistance, wallMask))
+            if (Physics.Raycast(carPos, car.forward, fallbackRaycastDistance, wallMask)
+                || Physics.SphereCast(carPos, 1, car.forward, out RaycastHit _, fallbackRaycastDistance, wallMask))
             {
                 // going to hit a wall, time to correct
                 // turn toward the goal point
