@@ -948,8 +948,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e7259dba140bda41a7e56fbb3f8443d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  guidePointDistance: 10
+  fallbackRaycastDistance: 10
   path: {fileID: 2052532385}
   car: {fileID: 195158149}
+  behaviour: {fileID: 733753307}
+--- !u!114 &733753307 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3937480829960423655}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733753303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45a6054c679f60e4b9165b268c9231db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &739788003
 GameObject:
   m_ObjectHideFlags: 0
