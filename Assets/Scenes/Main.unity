@@ -957,7 +957,7 @@ MonoBehaviour:
   fallbackRaycastDistance: 10
   path: {fileID: 2052532385}
   car: {fileID: 195158149}
-  carRadius: 1
+  feelerRadius: 0.5
   behaviour: {fileID: 733753307}
 --- !u!114 &733753307 stripped
 MonoBehaviour:
@@ -2523,7 +2523,7 @@ MonoBehaviour:
   - {fileID: 68811773}
   - {fileID: 739788004}
   - {fileID: 402048857}
-  width: 3
+  radius: 2
 --- !u!1001 &2080204890
 PrefabInstance:
   m_ObjectHideFlags: 0

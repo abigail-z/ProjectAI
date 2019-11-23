@@ -8,7 +8,7 @@ public class AIInput : MonoBehaviour
     public float fallbackRaycastDistance;
     public Path path;
     public Transform car;
-    public float carRadius;
+    public float feelerRadius;
     public CarBehaviour behaviour;
     private LayerMask wallMask;
 
@@ -35,16 +35,16 @@ public class AIInput : MonoBehaviour
         Vector3 intersect = GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
         if (found)
         {
-            // raycast to the intersect between the goal line and forward line
             intersect.y = ppi.point.y;
-            float maxDistance = (intersect - carPos).magnitude;
-            if (Physics.Raycast(carPos, intersect - carPos, maxDistance, wallMask)
-                || Physics.SphereCast(carPos, 1, intersect - carPos, out RaycastHit _, maxDistance, wallMask))
+            float feelerDistance = (intersect - ppi.point).magnitude;
+
+            // check if the feeler is outside the path
+            if (feelerDistance > path.radius - feelerRadius)
             {
                 // going to hit a wall, time to correct
                 // turn toward the goal point
                 float dir = Vector3.Dot(car.right, ppi.point - carPos);
-                if (dir != 0)
+                if (Mathf.Abs(dir) > Mathf.Epsilon)
                 {
                     behaviour.turnInput = dir / Mathf.Abs(dir);
                     return;
@@ -63,7 +63,7 @@ public class AIInput : MonoBehaviour
                 // going to hit a wall, time to correct
                 // turn toward the goal point
                 float dir = Vector3.Dot(car.right, ppi.point - carPos);
-                if (dir != 0)
+                if (Mathf.Abs(dir) > Mathf.Epsilon)
                 {
                     behaviour.turnInput = dir / Mathf.Abs(dir);
                     return;
@@ -72,7 +72,7 @@ public class AIInput : MonoBehaviour
         }
 
         // if we get here without returning, apply random wander
-        behaviour.turnInput += Random.Range(-1f, 1f) * Time.fixedDeltaTime;
+        behaviour.turnInput += Random.Range(-1f, 1f) * 2 *  Time.fixedDeltaTime;
     }
 
     public Vector3 GetLineIntersectionPoint(Vector3 A1, Vector3 A2, Vector3 B1, Vector3 B2, out bool found)
@@ -110,7 +110,7 @@ public class AIInput : MonoBehaviour
             intersect.y = ppi.point.y;
             Gizmos.color = Color.red;
             Gizmos.DrawLine(ppi.point, intersect);
-            Gizmos.DrawWireSphere(intersect, 0.1f);
+            Gizmos.DrawWireSphere(intersect, feelerRadius);
         }
 
         // draw steering input
