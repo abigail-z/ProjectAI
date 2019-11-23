@@ -27,7 +27,7 @@ public class AIInput : MonoBehaviour
         carPos.y = ppi.point.y;
 
         // find the intersection between the car's heading and perpendicular to the track
-        Vector3 intersect = GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
+        Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
         bool doTurn = false;
         if (found)
         {
@@ -65,28 +65,6 @@ public class AIInput : MonoBehaviour
         behaviour.turnInput = wander;
     }
 
-    public Vector3 GetLineIntersectionPoint(Vector3 A1, Vector3 A2, Vector3 B1, Vector3 B2, out bool found)
-    {
-        float tmp = (B2.x - B1.x) * (A2.z - A1.z) - (B2.z - B1.z) * (A2.x - A1.x);
-
-        if (tmp == 0)
-        {
-            // No solution!
-            found = false;
-            return Vector2.zero;
-        }
-
-        float mu = ((A1.x - B1.x) * (A2.z - A1.z) - (A1.z - B1.z) * (A2.x - A1.x)) / tmp;
-
-        found = true;
-
-        return new Vector3(
-            B1.x + (B2.x - B1.x) * mu,
-            0,
-            B1.z + (B2.z - B1.z) * mu
-        );
-    }
-
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
@@ -94,7 +72,7 @@ public class AIInput : MonoBehaviour
         Vector3 perpendicular = new Vector3(ppi.direction.z, 0, -ppi.direction.x);
 
         // draw goal point feeler
-        Vector3 intersect = GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
+        Vector3 intersect = VectorUtil.GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
         if (found)
         {
             intersect.y = ppi.point.y;
