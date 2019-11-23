@@ -3,20 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class PathNode : MonoBehaviour, IComparable
+public class PathNode : MonoBehaviour
 {
-    public int index = 0;
+    public Path path;
 
-    public int CompareTo(object obj)
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
     {
-        PathNode otherNode = obj as PathNode;
-        if (otherNode != null)
-        {
-            return index - otherNode.index;
-        }
-        else
-        {
-            throw new ArgumentException("Object is not a PathNode");
-        }
+        path.OnDrawGizmosSelected();
     }
+#endif
 }

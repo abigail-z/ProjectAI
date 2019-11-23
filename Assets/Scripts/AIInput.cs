@@ -10,16 +10,11 @@ public class AIInput : MonoBehaviour
     public Transform car;
     public float feelerRadius;
     public CarBehaviour behaviour;
-    private LayerMask wallMask;
-
-    void Awake()
-    {
-        wallMask = LayerMask.GetMask("Wall");
-    }
+    private float wander;
 
     void Update()
     {
-        // always accelerate, assume no turn
+        // always accelerate, reset steering
         behaviour.accelerationInput = 1;
         behaviour.turnInput = 0;
 
@@ -33,46 +28,41 @@ public class AIInput : MonoBehaviour
 
         // find the intersection between the car's heading and perpendicular to the track
         Vector3 intersect = GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
+        bool doTurn = false;
         if (found)
         {
+            // if there is an intercept, that is the feeler
+            // check if the feeler falls outside the path
             intersect.y = ppi.point.y;
             float feelerDistance = (intersect - ppi.point).magnitude;
-
-            // check if the feeler is outside the path
-            if (feelerDistance > path.radius - feelerRadius)
+            if (feelerDistance + feelerRadius > path.radius)
             {
-                // going to hit a wall, time to correct
-                // turn toward the goal point
-                float dir = Vector3.Dot(car.right, ppi.point - carPos);
-                if (Mathf.Abs(dir) > Mathf.Epsilon)
-                {
-                    behaviour.turnInput = dir / Mathf.Abs(dir);
-                    return;
-                }
+                // if it does, we're going to hit a wall, time to correct
+                doTurn = true;
             }
         }
         else
         {
-#if UNITY_EDITOR
-            Debug.Log("No intersection found, using fallback raycast.");
-#endif
-            // raycast the max distance
-            if (Physics.Raycast(carPos, car.forward, fallbackRaycastDistance, wallMask)
-                || Physics.SphereCast(carPos, 1, car.forward, out RaycastHit _, fallbackRaycastDistance, wallMask))
-            {
-                // going to hit a wall, time to correct
-                // turn toward the goal point
-                float dir = Vector3.Dot(car.right, ppi.point - carPos);
-                if (Mathf.Abs(dir) > Mathf.Epsilon)
-                {
-                    behaviour.turnInput = dir / Mathf.Abs(dir);
-                    return;
-                }
-            }
+            // no intercept found, steer toward the goal
+            doTurn = true;
         }
 
-        // if we get here without returning, apply random wander
-        behaviour.turnInput += Random.Range(-1f, 1f) * 2 *  Time.fixedDeltaTime;
+        if (doTurn)
+        {
+            // turn toward the goal point
+            float dir = Vector3.Dot(car.right, ppi.point - carPos);
+            if (Mathf.Abs(dir) > Mathf.Epsilon)
+            {
+                behaviour.turnInput = dir / Mathf.Abs(dir);
+                // reset wander
+                wander = 0;
+                return;
+            }
+        }
+        
+        // apply random wander if we did not turn
+        wander += Random.Range(-1f, 1f) * Time.fixedDeltaTime;
+        behaviour.turnInput = wander;
     }
 
     public Vector3 GetLineIntersectionPoint(Vector3 A1, Vector3 A2, Vector3 B1, Vector3 B2, out bool found)

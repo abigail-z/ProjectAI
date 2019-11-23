@@ -74,13 +74,13 @@ public class Path : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    void OnDrawGizmosSelected()
+    public void OnDrawGizmosSelected()
     {
         for (int i = 0; i < nodes.Count; ++i)
         {
+            // get nodes
             Vector3 currentNode = nodes[i].position;
             Vector3 nextNode;
-
             if (i == nodes.Count - 1)
             {
                 nextNode = nodes[0].position;
@@ -89,13 +89,19 @@ public class Path : MonoBehaviour
             {
                 nextNode = nodes[i + 1].position;
             }
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(currentNode, nextNode);
+            // draw node center
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(currentNode, Vector3.one * 0.25f);
+            // draw node radius
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(currentNode, radius);
+            // draw path radius
+            float angle = Mathf.Atan2(nextNode.x - currentNode.x, nextNode.z - currentNode.z) * 180 / Mathf.PI;
+            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            Vector3 left = rotation * Vector3.left;
+            Vector3 right = rotation * Vector3.right;
+            Gizmos.DrawLine(currentNode + left * radius, nextNode + left * radius);
+            Gizmos.DrawLine(currentNode + right * radius, nextNode + right * radius);
         }
     }
 #endif
