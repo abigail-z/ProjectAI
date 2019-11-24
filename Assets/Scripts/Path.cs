@@ -17,24 +17,8 @@ public class Path : MonoBehaviour
         {
             // first grab 2 nodes in sequence
             // this will represent our line
-            Vector3 startNode = nodes[i].position;
-            Vector3 endNode;
-            Vector3 nextNode;
-            if (i == nodes.Count - 2)
-            {
-                endNode = nodes[i + 1].position;
-                nextNode = nodes[0].position;
-            }
-            else if (i == nodes.Count - 1)
-            {
-                endNode = nodes[0].position;
-                nextNode = nodes[1].position;
-            }
-            else
-            {
-                endNode = nodes[i + 1].position;
-                nextNode = nodes[i + 2].position;
-            }
+            Vector3 startNode = GetNode(i);
+            Vector3 endNode = GetNode(i + 1);
 
             // find the closest point on this line
             float lineLength = (endNode - startNode).magnitude;
@@ -42,16 +26,33 @@ public class Path : MonoBehaviour
             float distanceOnLine = Vector3.Dot(point - startNode, lineDir);
             Vector3 pointOnLine = startNode + lineDir * distanceOnLine;
             Vector3 leadingPoint;
-            if (distanceOnLine + leadDistance > (endNode - startNode).magnitude)
+            // if the lead point is beyond the end of the line, bend it around corners
+            if (distanceOnLine + leadDistance > lineLength)
             {
-                // if the lead point is beyond the end of the line, bend it around the corner
                 float overrunDistance = distanceOnLine + leadDistance - lineLength;
-                lineDir = (nextNode - endNode).normalized;
-                leadingPoint = endNode + lineDir * overrunDistance;
+                startNode = endNode;
+                endNode = GetNode(i + 2);
+                lineLength = (endNode - startNode).magnitude;
+                // keep bending around corners until there's no overrun
+                int j = 3;
+                while (overrunDistance > lineLength)
+                {
+                    // subtract the line length from the overrun
+                    overrunDistance -= lineLength;
+                    // get the next line and calculate its length
+                    startNode = endNode;
+                    endNode = GetNode(i + j);
+                    lineLength = (endNode - startNode).magnitude;
+                    // update iterator
+                    j += 1;
+                }
+
+                lineDir = (endNode - startNode).normalized;
+                leadingPoint = startNode + lineDir * overrunDistance;
             }
             else
             {
-                // if the lead point is still on this line, do nothing
+                // otherwise, map it on this line as expected
                 leadingPoint = pointOnLine + lineDir * leadDistance;
             }
 
@@ -70,6 +71,11 @@ public class Path : MonoBehaviour
             point = closestPoint,
             direction = forward
         };
+    }
+
+    Vector3 GetNode(int i)
+    {
+        return nodes[i % nodes.Count].position;
     }
 
 #if UNITY_EDITOR
