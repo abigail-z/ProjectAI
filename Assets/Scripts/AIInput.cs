@@ -75,9 +75,11 @@ public class AIInput : MonoBehaviour
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
         if (found)
         {
-            intersect.y = ppi.point.y;
+            Vector3 vehiclePoint = car.position;
+            vehiclePoint.y = intersect.y = ppi.point.y;
             Gizmos.color = Color.red;
             Gizmos.DrawLine(ppi.point, intersect);
+            Gizmos.DrawLine(vehiclePoint, intersect);
             Gizmos.DrawWireSphere(intersect, feelerRadius);
         }
 

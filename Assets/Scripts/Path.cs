@@ -92,7 +92,7 @@ public class Path : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(currentNode, Vector3.one * 0.25f);
             // draw node radius
-            Gizmos.color = Color.white;
+            Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(currentNode, radius);
             // draw path radius
             float angle = Mathf.Atan2(nextNode.x - currentNode.x, nextNode.z - currentNode.z) * 180 / Mathf.PI;
