@@ -33,8 +33,9 @@ public class CarBehaviour : MonoBehaviour
 
     // particle systems
     public float minSmokeSpeed;
+    public float maxSmokeSpeed;
+    public float maxEmissionRate;
     private ParticleSystem[] particleSystems;
-    private bool particlesPlaying;
 
     // misc privates
     private Vector3 offset;
@@ -54,7 +55,12 @@ public class CarBehaviour : MonoBehaviour
 
         // particle systems
         particleSystems = GetComponentsInChildren<ParticleSystem>();
-        particlesPlaying = false;
+        foreach (ParticleSystem p in particleSystems)
+        {
+            p.Play();
+            var emission = p.emission;
+            emission.rateOverTime = 0;
+        }
     }
 
     void FixedUpdate()
@@ -90,22 +96,10 @@ public class CarBehaviour : MonoBehaviour
             = Quaternion.RotateTowards(leftFrontWheel.localRotation, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
 
         // apply smoke effects
-        bool shouldSmoke = Mathf.Abs(perpendicularSpeed) > minSmokeSpeed;
-        if (!particlesPlaying && shouldSmoke)
+        foreach (ParticleSystem p in particleSystems)
         {
-            foreach (ParticleSystem p in particleSystems)
-            {
-                p.Play();
-            }
-            particlesPlaying = true;
-        }
-        else if (particlesPlaying && !shouldSmoke)
-        {
-            foreach (ParticleSystem p in particleSystems)
-            {
-                p.Stop();
-            }
-            particlesPlaying = false;
+            var emission = p.emission;
+            emission.rateOverTime = maxEmissionRate * Mathf.Clamp01((perpendicularSpeed - minSmokeSpeed) / (maxSmokeSpeed - minSmokeSpeed));
         }
     }
 }

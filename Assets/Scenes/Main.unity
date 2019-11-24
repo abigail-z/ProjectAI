@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733753303}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9098115905ff4356a25a03ac05830d9, type: 3}
   m_Name: 
@@ -1061,7 +1061,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733753303}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e7259dba140bda41a7e56fbb3f8443d, type: 3}
   m_Name: 
@@ -2937,6 +2937,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
+        type: 3}
+      propertyPath: maxTurnRate
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
+        type: 3}
+      propertyPath: accelForce
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
+        type: 3}
+      propertyPath: minSmokeSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
+        type: 3}
+      propertyPath: maxSmokeSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
+        type: 3}
+      propertyPath: maxEmissionRate
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3937480830234271443, guid: 6be11f0c78d162d44aacba4d2172dc7b,
         type: 3}
