@@ -44,6 +44,7 @@ public class AIInput : MonoBehaviour
         else
         {
             // no intercept found, steer toward the goal
+            Debug.Log("MATH!");
             doTurn = true;
         }
 

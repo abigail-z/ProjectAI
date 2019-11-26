@@ -8,7 +8,7 @@ public class VectorUtil
     {
         float tmp = (B2.x - B1.x) * (A2.z - A1.z) - (B2.z - B1.z) * (A2.x - A1.x);
 
-        if (tmp == 0)
+        if (Mathf.Abs(tmp) <= Mathf.Epsilon)
         {
             // No solution!
             found = false;
