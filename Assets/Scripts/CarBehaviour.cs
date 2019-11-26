@@ -99,7 +99,7 @@ public class CarBehaviour : MonoBehaviour
         foreach (ParticleSystem p in particleSystems)
         {
             var emission = p.emission;
-            emission.rateOverTime = maxEmissionRate * Mathf.Clamp01((perpendicularSpeed - minSmokeSpeed) / (maxSmokeSpeed - minSmokeSpeed));
+            emission.rateOverTime = maxEmissionRate * Mathf.Clamp01((Mathf.Abs(perpendicularSpeed) - minSmokeSpeed) / (maxSmokeSpeed - minSmokeSpeed));
         }
     }
 }
