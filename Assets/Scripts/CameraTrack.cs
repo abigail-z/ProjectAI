@@ -13,7 +13,7 @@ public class CameraTrack : MonoBehaviour
 
     void Start()
     {
-        offset = transform.position;
+        offset = transform.position - toTrack.position;
     }
 
     void LateUpdate()
