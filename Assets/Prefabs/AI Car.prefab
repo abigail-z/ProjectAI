@@ -56,8 +56,8 @@ MonoBehaviour:
   maxTiltSpeed: 6
   frontWheelTurnAngle: 30
   wheelTurnDelta: 300
-  minSmokeSpeed: 4
-  maxSmokeSpeed: 6
+  minSmokeSpeed: 3
+  maxSmokeSpeed: 5
   maxEmissionRate: 25
 --- !u!114 &733753305
 MonoBehaviour:
@@ -116,7 +116,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3937480830246137290}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: a0c296cfe93614854af9e35fbaf78538, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -497,21 +497,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Front Left Tire
       objectReference: {fileID: 0}
-    - target: {fileID: 1616890662523094, guid: 512151c1530b99343a884b12ee9c5e1e, type: 3}
-      propertyPath: m_Name
-      value: Rear Right Tire
-      objectReference: {fileID: 0}
     - target: {fileID: 1214189404145120, guid: 512151c1530b99343a884b12ee9c5e1e, type: 3}
       propertyPath: m_Name
       value: Front Right Tire
+      objectReference: {fileID: 0}
+    - target: {fileID: 1384095969250144, guid: 512151c1530b99343a884b12ee9c5e1e, type: 3}
+      propertyPath: m_Name
+      value: Chassis
       objectReference: {fileID: 0}
     - target: {fileID: 1375252959024446, guid: 512151c1530b99343a884b12ee9c5e1e, type: 3}
       propertyPath: m_Name
       value: Rear Left Tire
       objectReference: {fileID: 0}
-    - target: {fileID: 1384095969250144, guid: 512151c1530b99343a884b12ee9c5e1e, type: 3}
+    - target: {fileID: 1616890662523094, guid: 512151c1530b99343a884b12ee9c5e1e, type: 3}
       propertyPath: m_Name
-      value: Chassis
+      value: Rear Right Tire
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 512151c1530b99343a884b12ee9c5e1e, type: 3}

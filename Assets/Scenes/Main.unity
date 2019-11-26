@@ -2916,7 +2916,7 @@ PrefabInstance:
     - target: {fileID: 2671536337783633875, guid: c2009372c589f4ba6b0432583b9a0d41,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 2671536337783633875, guid: c2009372c589f4ba6b0432583b9a0d41,
         type: 3}
@@ -2972,16 +2972,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AI Car
       objectReference: {fileID: 0}
-    - target: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
-        type: 3}
-      propertyPath: minSmokeSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3937480830234271442, guid: 6be11f0c78d162d44aacba4d2172dc7b,
-        type: 3}
-      propertyPath: maxSmokeSpeed
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 3937480830234271443, guid: 6be11f0c78d162d44aacba4d2172dc7b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2995,7 +2985,7 @@ PrefabInstance:
     - target: {fileID: 3937480830234271443, guid: 6be11f0c78d162d44aacba4d2172dc7b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 3937480830234271443, guid: 6be11f0c78d162d44aacba4d2172dc7b,
         type: 3}
