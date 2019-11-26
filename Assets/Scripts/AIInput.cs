@@ -28,7 +28,7 @@ public class AIInput : MonoBehaviour
 
         // find the intersection between the car's heading and perpendicular to the track
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
-        bool doTurn = false;
+        float turnAmt = 0f;
         if (found)
         {
             // if there is an intercept, that is the feeler
@@ -38,23 +38,23 @@ public class AIInput : MonoBehaviour
             if (feelerDistance + feelerRadius > path.radius)
             {
                 // if it does, we're going to hit a wall, time to correct
-                doTurn = true;
+                turnAmt = Mathf.Clamp01((feelerRadius + feelerDistance - path.radius) / (maxSmokeSpeed - minSmokeSpeed));
+                // TODO
             }
         }
         else
         {
             // no intercept found, steer toward the goal
-            Debug.Log("MATH!");
-            doTurn = true;
+            turnAmt = 1f;
         }
 
-        if (doTurn)
+        if (Mathf.Abs(turnAmt) > Mathf.Epsilon)
         {
             // turn toward the goal point
             float dir = Vector3.Dot(car.right, ppi.point - carPos);
             if (Mathf.Abs(dir) > Mathf.Epsilon)
             {
-                behaviour.turnInput = dir / Mathf.Abs(dir);
+                behaviour.turnInput = turnAmt * dir / Mathf.Abs(dir);
                 // reset wander
                 wander = 0;
                 return;
