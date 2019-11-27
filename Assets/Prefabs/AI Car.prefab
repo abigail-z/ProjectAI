@@ -72,10 +72,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guidePointDistance: 10
-  fallbackRaycastDistance: 10
+  feelerRadius: 0.5
+  wanderStrength: 2
   path: {fileID: 0}
   car: {fileID: 5839326424041226411}
-  feelerRadius: 0.5
   behaviour: {fileID: 3937480830234271442}
 --- !u!1 &3937480830246137290
 GameObject:
