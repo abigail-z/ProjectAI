@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnInput: 0
   accelerationInput: 0
-  maxTurnRate: 80
+  maxTurnRate: 70
   accelForce: 30
   requiredTurningVelocity: 6
   maxTopTilt: 10
