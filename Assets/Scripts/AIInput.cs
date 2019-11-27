@@ -5,10 +5,10 @@ using UnityEngine;
 public class AIInput : MonoBehaviour
 {
     public float guidePointDistance;
-    public float fallbackRaycastDistance;
+    public float feelerRadius;
+    public float wanderStrength;
     public Path path;
     public Transform car;
-    public float feelerRadius;
     public CarBehaviour behaviour;
     private float wander;
 
@@ -28,7 +28,7 @@ public class AIInput : MonoBehaviour
 
         // find the intersection between the car's heading and perpendicular to the track
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
-        float turnAmt = 0f;
+        bool doTurn = false;
         if (found)
         {
             // if there is an intercept, that is the feeler
@@ -38,23 +38,22 @@ public class AIInput : MonoBehaviour
             if (feelerDistance + feelerRadius > path.radius)
             {
                 // if it does, we're going to hit a wall, time to correct
-                turnAmt = Mathf.Clamp01((feelerRadius + feelerDistance - path.radius) / (maxSmokeSpeed - minSmokeSpeed));
-                // TODO
+                doTurn = true;
             }
         }
         else
         {
             // no intercept found, steer toward the goal
-            turnAmt = 1f;
+            doTurn = true;
         }
 
-        if (Mathf.Abs(turnAmt) > Mathf.Epsilon)
+        if (doTurn)
         {
             // turn toward the goal point
             float dir = Vector3.Dot(car.right, ppi.point - carPos);
             if (Mathf.Abs(dir) > Mathf.Epsilon)
             {
-                behaviour.turnInput = turnAmt * dir / Mathf.Abs(dir);
+                behaviour.turnInput = dir / Mathf.Abs(dir);
                 // reset wander
                 wander = 0;
                 return;
@@ -62,7 +61,7 @@ public class AIInput : MonoBehaviour
         }
         
         // apply random wander if we did not turn
-        wander += Random.Range(-1f, 1f) * Time.fixedDeltaTime;
+        wander += Random.Range(-1f, 1f) * wanderStrength * Time.fixedDeltaTime;
         behaviour.turnInput = wander;
     }
 
@@ -89,7 +88,14 @@ public class AIInput : MonoBehaviour
         Gizmos.DrawLine(car.position, car.position + behaviour.turnInput * car.right * 5);
 
         // draw goal point
-        Gizmos.color = Color.white;
+        if (Mathf.Abs(wander) > Mathf.Epsilon)
+        {
+            Gizmos.color = Color.blue;
+        }
+        else
+        {
+            Gizmos.color = Color.white;
+        }
         Gizmos.DrawWireSphere(ppi.point, 0.25f);
         Gizmos.DrawLine(ppi.point, ppi.point + ppi.direction);
     }
