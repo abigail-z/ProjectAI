@@ -30,6 +30,10 @@ public class CarBehaviour : MonoBehaviour
     public float wheelTurnDelta;
     private Transform leftFrontWheel;
     private Transform rightFrontWheel;
+    private Transform leftRearWheel;
+    private Transform rightRearWheel;
+    private Quaternion turnRot;
+    private float velocityRot;
 
     // particle systems
     public float minSmokeSpeed;
@@ -49,6 +53,8 @@ public class CarBehaviour : MonoBehaviour
         chassis = car.Find("Chassis");
         leftFrontWheel = car.Find("Front Left Tire");
         rightFrontWheel = car.Find("Front Right Tire");
+        leftRearWheel = car.Find("Rear Left Tire");
+        rightRearWheel = car.Find("Rear Right Tire");
 
         offset = car.position - sphere.position;
         sphereRB = sphere.GetComponent<Rigidbody>();
@@ -91,9 +97,17 @@ public class CarBehaviour : MonoBehaviour
         chassis.localRotation = Quaternion.RotateTowards(chassis.localRotation, topTargetRot, topTiltDelta * Time.deltaTime);
 
         // animating tires
+        // side-to-side
         Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * turnInput, Vector3.up);
-        rightFrontWheel.localRotation = leftFrontWheel.localRotation
-            = Quaternion.RotateTowards(leftFrontWheel.localRotation, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
+        turnRot = Quaternion.RotateTowards(turnRot, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
+        // float frontWheelTargetRot = Mathf.SmoothDampAngle
+        // rotation
+        float forwardSpeed = Vector3.Dot(car.forward, sphereRB.velocity);
+        velocityRot += forwardSpeed * Time.deltaTime * 180;
+        velocityRot %= 360;
+        // applied
+        rightFrontWheel.localRotation = leftFrontWheel.localRotation = turnRot * Quaternion.AngleAxis(velocityRot, Vector3.right);
+        rightRearWheel.localRotation = leftRearWheel.localRotation = Quaternion.AngleAxis(velocityRot, Vector3.right);
 
         // apply smoke effects
         foreach (ParticleSystem p in particleSystems)
