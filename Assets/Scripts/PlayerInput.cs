@@ -14,7 +14,13 @@ public class PlayerInput : MonoBehaviour
     void Update()
     {
         // every frame, grab user input and apply it to this obj's carbehaviour
-        cb.accelerationInput = Input.GetAxisRaw("Vertical");
-        cb.turnInput = Input.GetAxisRaw("Horizontal");
+        float acceleration = Input.GetAxisRaw("Vertical");
+        float turn = Input.GetAxisRaw("Horizontal");
+
+        cb.ApplyInput(new CarInput
+        {
+            acceleration = acceleration,
+            turn = turn
+        });
     }
 }

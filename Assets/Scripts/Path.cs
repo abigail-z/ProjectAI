@@ -22,12 +22,11 @@ public class Path : MonoBehaviour
             Vector3 endNode = GetNode(i + 1);
 
             // find the closest point on this line
-            
             Vector3 lineDir = (endNode - startNode).normalized;
             float distance = Vector3.Dot(point - startNode, lineDir);
             Vector3 pointOnLine = startNode + lineDir * distance;
 
-            // check if the line point is the closest one, if it is store its leading point
+            // check if the line point is the closest one, if it is store it
             float magnitude = (point - pointOnLine).magnitude;
             if (magnitude < lowestMagnitude)
             {
@@ -44,10 +43,11 @@ public class Path : MonoBehaviour
     {
         Vector3 startNode = GetNode(i);
         Vector3 endNode = GetNode(i + 1);
-        Vector3 lineDir = (endNode - startNode).normalized;
 
+        Vector3 lineDir = (endNode - startNode).normalized;
         float lineLength = (endNode - startNode).magnitude;
 
+        // if lead point overruns the current line, bend it around corners
         if (distanceOnLine + leadDistance > lineLength)
         {
             float overrunDistance = distanceOnLine + leadDistance - lineLength;

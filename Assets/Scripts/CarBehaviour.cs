@@ -9,10 +9,7 @@ public class CarBehaviour : MonoBehaviour
     private Transform car;
 
     // input vars
-    [HideInInspector]
-    public float turnInput;
-    [HideInInspector]
-    public float accelerationInput;
+    private CarInput input;
 
     // control vars
     public float maxTurnRate;
@@ -67,13 +64,20 @@ public class CarBehaviour : MonoBehaviour
             var emission = p.emission;
             emission.rateOverTime = 0;
         }
+
+        // input
+        input = new CarInput
+        {
+            acceleration = 0,
+            turn = 0
+        };
     }
 
     void FixedUpdate()
     {
         // acceleration
-        Vector3 input = car.forward * accelerationInput;
-        sphereRB.AddForce(input * accelForce, ForceMode.Acceleration);
+        Vector3 turn = car.forward * input.acceleration;
+        sphereRB.AddForce(turn * accelForce, ForceMode.Acceleration);
     }
 
     void Update()
@@ -84,11 +88,11 @@ public class CarBehaviour : MonoBehaviour
         car.position = sphere.position + offset;
         if (Vector3.Dot(car.forward, sphereRB.velocity) >= 0)
         {
-            car.forward = Quaternion.AngleAxis(turnInput * turnRate * Time.deltaTime, Vector3.up) * car.forward;
+            car.forward = Quaternion.AngleAxis(input.turn * turnRate * Time.deltaTime, Vector3.up) * car.forward;
         }
         else
         {
-            car.forward = Quaternion.AngleAxis(turnInput * -1 * turnRate * Time.deltaTime, Vector3.up) * car.forward;
+            car.forward = Quaternion.AngleAxis(input.turn * -1 * turnRate * Time.deltaTime, Vector3.up) * car.forward;
         }
 
         // animating car chassis
@@ -98,7 +102,7 @@ public class CarBehaviour : MonoBehaviour
 
         // animating tires
         // side-to-side
-        Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * turnInput, Vector3.up);
+        Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * input.turn, Vector3.up);
         turnRot = Quaternion.RotateTowards(turnRot, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
         // rotation
         float forwardSpeed = Vector3.Dot(car.forward, sphereRB.velocity);
@@ -114,5 +118,10 @@ public class CarBehaviour : MonoBehaviour
             var emission = p.emission;
             emission.rateOverTime = maxEmissionRate * Mathf.Clamp01((Mathf.Abs(perpendicularSpeed) - minSmokeSpeed) / (maxSmokeSpeed - minSmokeSpeed));
         }
+    }
+
+    public void ApplyInput(CarInput input)
+    {
+        this.input = input;
     }
 }

@@ -10,44 +10,35 @@ public class AIInput : MonoBehaviour
     public Path path;
     public Transform car;
     public CarBehaviour behaviour;
-    private float wander;
+    
+    // state machine vars
+    private InputStateMachine stateMachine;
+    private IState normalState;
+
+    void Awake()
+    {
+        stateMachine = new InputStateMachine();
+        normalState = new NormalState(this, wanderStrength);
+        stateMachine.ChangeState(normalState);
+    }
 
     void Update()
     {
-        // always accelerate, reset steering
-        behaviour.accelerationInput = 1;
-        behaviour.turnInput = 0;
+        behaviour.ApplyInput(stateMachine.Update());
+    }
 
-        // find path goal point and match car height to it
+    public float PathFollowInput()
+    {
         PathPointInfo goal = path.FindClosestLeadingPoint(car.position, guidePointDistance);
+
+        // match car height to goal height
         Vector3 carPos = car.position;
         carPos.y = goal.point.y;
 
-        if (PathFollowShouldTurn(goal))
-        {
-            // turn toward the goal point
-            float dir = Vector3.Dot(car.right, goal.point - carPos);
-            if (Mathf.Abs(dir) > Mathf.Epsilon)
-            {
-                behaviour.turnInput = dir / Mathf.Abs(dir);
-                // reset wander
-                wander = 0;
-                return;
-            }
-        }
-        
-        // apply random wander if we did not turn
-        wander += Random.Range(-1f, 1f) * wanderStrength * Time.fixedDeltaTime;
-        behaviour.turnInput = wander;
-    }
-
-    bool PathFollowShouldTurn(PathPointInfo goal)
-    {
         // get perpendicular line to the guide point's direction
         Vector3 perpendicular = new Vector3(goal.direction.z, 0, -goal.direction.x);
 
-        Vector3 carPos = car.position;
-        carPos.y = goal.point.y;
+        bool doTurn = false;
 
         // find the intersection between the car's heading and perpendicular to the track
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, goal.point, goal.point + perpendicular, out bool found);
@@ -61,17 +52,27 @@ public class AIInput : MonoBehaviour
             if (feelerDistance + feelerRadius > path.radius)
             {
                 // if it does, we're going to hit a wall, time to correct
-                return true;
+                doTurn = true;
             }
         }
         else
         {
             // no intercept found, steer toward the goal
-            return true;
+            doTurn = true;
         }
 
-        // intercept is within path bounds, don't steer
-        return false;
+        // if we do need to turn, return the direction
+        if (doTurn)
+        {
+            float dir = Vector3.Dot(car.right, goal.point - carPos);
+            if (Mathf.Abs(dir) > Mathf.Epsilon)
+            {
+                return dir / Mathf.Abs(dir);
+            }
+        }
+
+        // don't need to turn
+        return 0;
     }
 
 #if UNITY_EDITOR
@@ -94,19 +95,7 @@ public class AIInput : MonoBehaviour
             Gizmos.DrawWireSphere(intersect, feelerRadius);
         }
 
-        // draw steering input
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(car.position, car.position + behaviour.turnInput * car.right * 5);
-
-        // draw goal point
-        if (Mathf.Abs(wander) > Mathf.Epsilon)
-        {
-            Gizmos.color = Color.blue;
-        }
-        else
-        {
-            Gizmos.color = Color.white;
-        }
+        Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(goal.point, 0.25f);
         Gizmos.DrawLine(goal.point, goal.point + goal.direction);
     }
