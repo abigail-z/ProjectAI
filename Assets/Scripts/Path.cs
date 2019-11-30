@@ -9,10 +9,11 @@ public class Path : MonoBehaviour
 
     public PathPointInfo FindClosestLeadingPoint(Vector3 point, float leadDistance)
     {
-        Vector3 closestPoint = Vector3.zero;
-        Vector3 forward = Vector3.zero;
+        int index = 0;
+        float distanceOnLine = 0;
         float lowestMagnitude = float.MaxValue;
 
+        // first, grab the closest line and line point
         for (int i = 0; i < nodes.Count; ++i)
         {
             // first grab 2 nodes in sequence
@@ -23,30 +24,23 @@ public class Path : MonoBehaviour
             // find the closest point on this line
             
             Vector3 lineDir = (endNode - startNode).normalized;
-            float distanceOnLine = Vector3.Dot(point - startNode, lineDir);
-            Vector3 pointOnLine = startNode + lineDir * distanceOnLine;
-
-            // if the lead point is beyond the end of the line, bend it around corners
-            (Vector3, Vector3) leadingPoint = GetLeadingPointAndDir(i, leadDistance, distanceOnLine);
+            float distance = Vector3.Dot(point - startNode, lineDir);
+            Vector3 pointOnLine = startNode + lineDir * distance;
 
             // check if the line point is the closest one, if it is store its leading point
             float magnitude = (point - pointOnLine).magnitude;
             if (magnitude < lowestMagnitude)
             {
-                closestPoint = leadingPoint.Item1;
-                forward = leadingPoint.Item2;
+                index = i;
+                distanceOnLine = distance;
                 lowestMagnitude = magnitude;
             }
         }
 
-        return new PathPointInfo
-        {
-            point = closestPoint,
-            direction = forward
-        };
+        return GetLeadingPointAndDir(index, leadDistance, distanceOnLine);
     }
 
-    (Vector3, Vector3) GetLeadingPointAndDir(int i, float leadDistance, float distanceOnLine)
+    PathPointInfo GetLeadingPointAndDir(int i, float leadDistance, float distanceOnLine)
     {
         Vector3 startNode = GetNode(i);
         Vector3 endNode = GetNode(i + 1);
@@ -77,14 +71,22 @@ public class Path : MonoBehaviour
             lineDir = (endNode - startNode).normalized;
             Vector3 leadingPoint = startNode + lineDir * overrunDistance;
 
-            return (leadingPoint, lineDir);
+            return new PathPointInfo
+            {
+                point = leadingPoint,
+                direction = lineDir
+            };
         }
         else
         {
             // otherwise, map it on this line as expected
             Vector3 leadingPoint = startNode + lineDir * distanceOnLine + lineDir * leadDistance;
 
-            return (leadingPoint, lineDir);
+            return new PathPointInfo
+            {
+                point = leadingPoint,
+                direction = lineDir
+            };
         }
     }
 
