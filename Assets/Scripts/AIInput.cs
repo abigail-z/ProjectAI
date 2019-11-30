@@ -23,7 +23,7 @@ public class AIInput : MonoBehaviour
         Vector3 carPos = car.position;
         carPos.y = goal.point.y;
 
-        if (ShouldTurn(goal))
+        if (PathFollowShouldTurn(goal))
         {
             // turn toward the goal point
             float dir = Vector3.Dot(car.right, goal.point - carPos);
@@ -41,7 +41,7 @@ public class AIInput : MonoBehaviour
         behaviour.turnInput = wander;
     }
 
-    bool ShouldTurn(PathPointInfo goal)
+    bool PathFollowShouldTurn(PathPointInfo goal)
     {
         // get perpendicular line to the guide point's direction
         Vector3 perpendicular = new Vector3(goal.direction.z, 0, -goal.direction.x);
@@ -52,7 +52,7 @@ public class AIInput : MonoBehaviour
         // find the intersection between the car's heading and perpendicular to the track
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, goal.point, goal.point + perpendicular, out bool found);
         // also turn if the intercept is behind the car, this means the car is backward
-        if (found && Vector3.Dot(car.forward, intersect) >= 0)
+        if (found)
         {
             // if there is an intercept, that is the feeler
             // check if the feeler falls outside the path
@@ -82,7 +82,7 @@ public class AIInput : MonoBehaviour
 
         // draw goal point feeler
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
-        if (found && Vector3.Dot(car.forward, intersect) >= 0)
+        if (found)
         {
             Vector3 vehiclePoint = car.position;
             vehiclePoint.y = intersect.y = ppi.point.y;
