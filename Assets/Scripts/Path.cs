@@ -21,47 +21,20 @@ public class Path : MonoBehaviour
             Vector3 endNode = GetNode(i + 1);
 
             // find the closest point on this line
-            float lineLength = (endNode - startNode).magnitude;
+            
             Vector3 lineDir = (endNode - startNode).normalized;
             float distanceOnLine = Vector3.Dot(point - startNode, lineDir);
             Vector3 pointOnLine = startNode + lineDir * distanceOnLine;
-            Vector3 leadingPoint;
-            // if the lead point is beyond the end of the line, bend it around corners
-            if (distanceOnLine + leadDistance > lineLength)
-            {
-                float overrunDistance = distanceOnLine + leadDistance - lineLength;
-                startNode = endNode;
-                endNode = GetNode(i + 2);
-                lineLength = (endNode - startNode).magnitude;
-                // keep bending around corners until there's no overrun
-                int j = 3;
-                while (overrunDistance > lineLength)
-                {
-                    // subtract the line length from the overrun
-                    overrunDistance -= lineLength;
-                    // get the next line and calculate its length
-                    startNode = endNode;
-                    endNode = GetNode(i + j);
-                    lineLength = (endNode - startNode).magnitude;
-                    // update iterator
-                    j += 1;
-                }
 
-                lineDir = (endNode - startNode).normalized;
-                leadingPoint = startNode + lineDir * overrunDistance;
-            }
-            else
-            {
-                // otherwise, map it on this line as expected
-                leadingPoint = pointOnLine + lineDir * leadDistance;
-            }
+            // if the lead point is beyond the end of the line, bend it around corners
+            (Vector3, Vector3) leadingPoint = GetLeadingPointAndDir(i, leadDistance, distanceOnLine);
 
             // check if the line point is the closest one, if it is store its leading point
             float magnitude = (point - pointOnLine).magnitude;
             if (magnitude < lowestMagnitude)
             {
-                closestPoint = leadingPoint;
-                forward = lineDir;
+                closestPoint = leadingPoint.Item1;
+                forward = leadingPoint.Item2;
                 lowestMagnitude = magnitude;
             }
         }
@@ -71,6 +44,48 @@ public class Path : MonoBehaviour
             point = closestPoint,
             direction = forward
         };
+    }
+
+    (Vector3, Vector3) GetLeadingPointAndDir(int i, float leadDistance, float distanceOnLine)
+    {
+        Vector3 startNode = GetNode(i);
+        Vector3 endNode = GetNode(i + 1);
+        Vector3 lineDir = (endNode - startNode).normalized;
+
+        float lineLength = (endNode - startNode).magnitude;
+
+        if (distanceOnLine + leadDistance > lineLength)
+        {
+            float overrunDistance = distanceOnLine + leadDistance - lineLength;
+            startNode = endNode;
+            endNode = GetNode(i + 2);
+            lineLength = (endNode - startNode).magnitude;
+            // keep bending around corners until there's no overrun
+            int j = 3;
+            while (overrunDistance > lineLength)
+            {
+                // subtract the line length from the overrun
+                overrunDistance -= lineLength;
+                // get the next line and calculate its length
+                startNode = endNode;
+                endNode = GetNode(i + j);
+                lineLength = (endNode - startNode).magnitude;
+                // update iterator
+                j += 1;
+            }
+
+            lineDir = (endNode - startNode).normalized;
+            Vector3 leadingPoint = startNode + lineDir * overrunDistance;
+
+            return (leadingPoint, lineDir);
+        }
+        else
+        {
+            // otherwise, map it on this line as expected
+            Vector3 leadingPoint = startNode + lineDir * distanceOnLine + lineDir * leadDistance;
+
+            return (leadingPoint, lineDir);
+        }
     }
 
     Vector3 GetNode(int i)
