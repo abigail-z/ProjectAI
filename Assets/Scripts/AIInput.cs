@@ -52,7 +52,7 @@ public class AIInput : MonoBehaviour
         // find the intersection between the car's heading and perpendicular to the track
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, goal.point, goal.point + perpendicular, out bool found);
         // also turn if the intercept is behind the car, this means the car is backward
-        if (found)
+        if (found && Vector3.Dot(car.forward, intersect - carPos) >= 0)
         {
             // if there is an intercept, that is the feeler
             // check if the feeler falls outside the path
@@ -77,17 +77,19 @@ public class AIInput : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        PathPointInfo ppi = path.FindClosestLeadingPoint(car.position, guidePointDistance);
-        Vector3 perpendicular = new Vector3(ppi.direction.z, 0, -ppi.direction.x);
+        PathPointInfo goal = path.FindClosestLeadingPoint(car.position, guidePointDistance);
+        Vector3 perpendicular = new Vector3(goal.direction.z, 0, -goal.direction.x);
+        Vector3 carPos = car.position;
+        carPos.y = goal.point.y;
 
         // draw goal point feeler
-        Vector3 intersect = VectorUtil.GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
-        if (found)
+        Vector3 intersect = VectorUtil.GetLineIntersectionPoint(car.position, car.position + car.forward, goal.point, goal.point + perpendicular, out bool found);
+        if (found && Vector3.Dot(car.forward, intersect - carPos) >= 0)
         {
             Vector3 vehiclePoint = car.position;
-            vehiclePoint.y = intersect.y = ppi.point.y;
+            vehiclePoint.y = intersect.y = goal.point.y;
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(ppi.point, intersect);
+            Gizmos.DrawLine(goal.point, intersect);
             Gizmos.DrawLine(vehiclePoint, intersect);
             Gizmos.DrawWireSphere(intersect, feelerRadius);
         }
@@ -105,8 +107,8 @@ public class AIInput : MonoBehaviour
         {
             Gizmos.color = Color.white;
         }
-        Gizmos.DrawWireSphere(ppi.point, 0.25f);
-        Gizmos.DrawLine(ppi.point, ppi.point + ppi.direction);
+        Gizmos.DrawWireSphere(goal.point, 0.25f);
+        Gizmos.DrawLine(goal.point, goal.point + goal.direction);
     }
 #endif
 }
