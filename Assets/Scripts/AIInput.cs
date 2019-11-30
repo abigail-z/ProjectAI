@@ -18,40 +18,15 @@ public class AIInput : MonoBehaviour
         behaviour.accelerationInput = 1;
         behaviour.turnInput = 0;
 
-        // find path goal point and vector perpendicular to track direction
-        PathPointInfo ppi = path.FindClosestLeadingPoint(car.position, guidePointDistance);
-        Vector3 perpendicular = new Vector3(ppi.direction.z, 0, -ppi.direction.x);
-
-        // grab the car's origin point to raycast from
+        // find path goal point and match car height to it
+        PathPointInfo goal = path.FindClosestLeadingPoint(car.position, guidePointDistance);
         Vector3 carPos = car.position;
-        carPos.y = ppi.point.y;
+        carPos.y = goal.point.y;
 
-        // find the intersection between the car's heading and perpendicular to the track
-        Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
-        bool doTurn = false;
-        // also turn if the intercept is behind the car, this means the car is backward
-        if (found && Vector3.Dot(car.forward, intersect) >= 0)
-        {
-            // if there is an intercept, that is the feeler
-            // check if the feeler falls outside the path
-            intersect.y = ppi.point.y;
-            float feelerDistance = (intersect - ppi.point).magnitude;
-            if (feelerDistance + feelerRadius > path.radius)
-            {
-                // if it does, we're going to hit a wall, time to correct
-                doTurn = true;
-            }
-        }
-        else
-        {
-            // no intercept found, steer toward the goal
-            doTurn = true;
-        }
-
-        if (doTurn)
+        if (ShouldTurn(goal))
         {
             // turn toward the goal point
-            float dir = Vector3.Dot(car.right, ppi.point - carPos);
+            float dir = Vector3.Dot(car.right, goal.point - carPos);
             if (Mathf.Abs(dir) > Mathf.Epsilon)
             {
                 behaviour.turnInput = dir / Mathf.Abs(dir);
@@ -64,6 +39,39 @@ public class AIInput : MonoBehaviour
         // apply random wander if we did not turn
         wander += Random.Range(-1f, 1f) * wanderStrength * Time.fixedDeltaTime;
         behaviour.turnInput = wander;
+    }
+
+    bool ShouldTurn(PathPointInfo goal)
+    {
+        // get perpendicular line to the guide point's direction
+        Vector3 perpendicular = new Vector3(goal.direction.z, 0, -goal.direction.x);
+
+        Vector3 carPos = car.position;
+        carPos.y = goal.point.y;
+
+        // find the intersection between the car's heading and perpendicular to the track
+        Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, goal.point, goal.point + perpendicular, out bool found);
+        // also turn if the intercept is behind the car, this means the car is backward
+        if (found && Vector3.Dot(car.forward, intersect) >= 0)
+        {
+            // if there is an intercept, that is the feeler
+            // check if the feeler falls outside the path
+            intersect.y = goal.point.y;
+            float feelerDistance = (intersect - goal.point).magnitude;
+            if (feelerDistance + feelerRadius > path.radius)
+            {
+                // if it does, we're going to hit a wall, time to correct
+                return true;
+            }
+        }
+        else
+        {
+            // no intercept found, steer toward the goal
+            return true;
+        }
+
+        // intercept is within path bounds, don't steer
+        return false;
     }
 
 #if UNITY_EDITOR
