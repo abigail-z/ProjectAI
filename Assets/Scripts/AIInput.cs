@@ -29,7 +29,8 @@ public class AIInput : MonoBehaviour
         // find the intersection between the car's heading and perpendicular to the track
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(carPos, carPos + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
         bool doTurn = false;
-        if (found)
+        // also turn if the intercept is behind the car, this means the car is backward
+        if (found && Vector3.Dot(car.forward, intersect) >= 0)
         {
             // if there is an intercept, that is the feeler
             // check if the feeler falls outside the path
@@ -73,7 +74,7 @@ public class AIInput : MonoBehaviour
 
         // draw goal point feeler
         Vector3 intersect = VectorUtil.GetLineIntersectionPoint(car.position, car.position + car.forward, ppi.point, ppi.point + perpendicular, out bool found);
-        if (found)
+        if (found && Vector3.Dot(car.forward, intersect) >= 0)
         {
             Vector3 vehiclePoint = car.position;
             vehiclePoint.y = intersect.y = ppi.point.y;

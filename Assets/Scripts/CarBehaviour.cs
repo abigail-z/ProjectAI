@@ -100,7 +100,6 @@ public class CarBehaviour : MonoBehaviour
         // side-to-side
         Quaternion frontWheelTargetRot = Quaternion.AngleAxis(frontWheelTurnAngle * turnInput, Vector3.up);
         turnRot = Quaternion.RotateTowards(turnRot, frontWheelTargetRot, wheelTurnDelta * Time.deltaTime);
-        // float frontWheelTargetRot = Mathf.SmoothDampAngle
         // rotation
         float forwardSpeed = Vector3.Dot(car.forward, sphereRB.velocity);
         velocityRot += forwardSpeed * Time.deltaTime * 180;
