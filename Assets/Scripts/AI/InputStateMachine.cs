@@ -44,15 +44,22 @@ public class InputStateMachine
     public abstract class State
     {
         public InputStateMachine StateMachine { get; private set; }
+        public bool Active { get; private set; }
 
         public void OnAddToStateMachine(InputStateMachine sm)
         {
             StateMachine = sm;
         }
 
-        public virtual void Enter() { }
+        public virtual void Enter()
+        {
+            Active = true;
+        }
 
-        public virtual void Exit() { }
+        public virtual void Exit()
+        {
+            Active = false;
+        }
 
         public abstract CarInput Execute();
     }

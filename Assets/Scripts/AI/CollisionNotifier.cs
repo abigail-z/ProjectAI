@@ -5,7 +5,7 @@ using UnityEngine;
 public class CollisionNotifier : MonoBehaviour
 {
     private List<ICollisionSubscriber> subscribers;
-    // Start is called before the first frame update
+    
     void Awake()
     {
         subscribers = new List<ICollisionSubscriber>();
@@ -13,7 +13,7 @@ public class CollisionNotifier : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        foreach(ICollisionSubscriber sub in subscribers)
+        foreach (ICollisionSubscriber sub in subscribers)
         {
             sub.OnCollision(col);
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AggressiveState : InputStateMachine.State
+public class AggressiveState : InputStateMachine.State, ICollisionSubscriber
 {
     private readonly AIInput owner;
     private float wander;
@@ -23,6 +23,12 @@ public class AggressiveState : InputStateMachine.State
 
     public override void Enter()
     {
+#if UNITY_EDITOR
+        Debug.Log("Aggressive State");
+#endif
+
+        base.Enter();
+
         owner.guidePointDistance /= 2;
         elapsedTime = 0;
     }
@@ -95,6 +101,17 @@ public class AggressiveState : InputStateMachine.State
 
     public override void Exit()
     {
+        base.Exit();
+
         owner.guidePointDistance = guidePointDistance;
+    }
+
+    public void OnCollision(Collision col)
+    {
+        // only keep track of collisions with cars
+        if (Active && col.transform.CompareTag("Car"))
+        {
+            elapsedTime = 0;
+        }
     }
 }

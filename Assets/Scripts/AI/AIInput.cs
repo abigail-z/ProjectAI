@@ -7,7 +7,6 @@ public class AIInput : MonoBehaviour
     public float guidePointDistance;
     public float feelerRadius;
     public float wanderStrength;
-    public int collisionsUntilAggressive;
     public float aggressiveTime;
     public Path path;
     public Transform car;
@@ -26,6 +25,7 @@ public class AIInput : MonoBehaviour
         stateMachine.AddState(normalState);
 
         AggressiveState aggressiveState = new AggressiveState(this, wanderStrength, guidePointDistance, aggressiveTime);
+        collisionNotifier.Subscribe(aggressiveState);
         stateMachine.AddState(aggressiveState);
 
         stateMachine.ChangeToState<NormalState>();

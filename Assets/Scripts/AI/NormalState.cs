@@ -14,6 +14,15 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
         this.wanderStrength = wanderStrength;
     }
 
+#if UNITY_EDITOR
+    public override void Enter()
+    {
+        base.Enter();
+
+        Debug.Log("Normal State");
+    }
+#endif
+
     public override CarInput Execute()
     {
         // do path follow
@@ -43,7 +52,7 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
     public void OnCollision(Collision col)
     {
         // only keep track of collisions with cars
-        if (col.transform.CompareTag("Car"))
+        if (Active && col.transform.CompareTag("Car"))
         {
             StateMachine.ChangeToState<AggressiveState>();
         }
