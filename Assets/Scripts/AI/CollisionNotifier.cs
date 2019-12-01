@@ -23,6 +23,11 @@ public class CollisionNotifier : MonoBehaviour
     {
         subscribers.Add(sub);
     }
+
+    public void Unsubscribe(ICollisionSubscriber sub)
+    {
+        subscribers.Remove(sub);
+    }
 }
 
 public interface ICollisionSubscriber

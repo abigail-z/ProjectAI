@@ -7,28 +7,16 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
     private readonly AIInput owner;
     private float wander;
     private readonly float wanderStrength;
-    private readonly int collisionsUntilAggressive;
-    private int collisions;
 
-    public NormalState(AIInput owner, float wanderStrength, int collisionsUntilAggressive)
+    public NormalState(AIInput owner, float wanderStrength)
     {
         this.owner = owner;
         this.wanderStrength = wanderStrength;
-        this.collisionsUntilAggressive = collisionsUntilAggressive;
-    }
-
-    public override void Enter()
-    {
-        collisions = 0;
     }
 
     public override CarInput Execute()
     {
-        if (collisions > collisionsUntilAggressive)
-        {
-            StateMachine.ChangeToState<AggressiveState>();
-        }
-
+        // do path follow
         float pathFollowInput = owner.PathFollowInput();
         if (Mathf.Abs(pathFollowInput) > 0)
         {
@@ -36,7 +24,7 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
             wander = 0;
             return new CarInput
             {
-                acceleration = 1,
+                acceleration = 0.95f,
                 turn = pathFollowInput
             };
         }
@@ -46,7 +34,7 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
             wander += Random.Range(-1f, 1f) * wanderStrength * Time.fixedDeltaTime;
             return new CarInput
             {
-                acceleration = 1,
+                acceleration = 0.95f,
                 turn = wander
             };
         }
@@ -54,9 +42,10 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
 
     public void OnCollision(Collision col)
     {
+        // only keep track of collisions with cars
         if (col.transform.CompareTag("Car"))
         {
-            collisions += 1;
+            StateMachine.ChangeToState<AggressiveState>();
         }
     }
 }

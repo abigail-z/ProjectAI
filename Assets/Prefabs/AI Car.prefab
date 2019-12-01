@@ -72,7 +72,7 @@ MonoBehaviour:
   guidePointDistance: 10
   feelerRadius: 0.5
   wanderStrength: 2
-  collisionsUntilAggressive: 5
+  collisionsUntilAggressive: 1
   aggressiveTime: 5
   path: {fileID: 0}
   car: {fileID: 5839326424041226411}
