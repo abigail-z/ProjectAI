@@ -57,7 +57,13 @@ public class CarBehaviour : MonoBehaviour
         sphereRB = sphere.GetComponent<Rigidbody>();
 
         // particle systems
-        particleSystems = GetComponentsInChildren<ParticleSystem>();
+        particleSystems = new ParticleSystem[]
+        {
+            leftFrontWheel.GetComponentInChildren<ParticleSystem>(),
+            rightFrontWheel.GetComponentInChildren<ParticleSystem>(),
+            leftRearWheel.GetComponentInChildren<ParticleSystem>(),
+            rightRearWheel.GetComponentInChildren<ParticleSystem>()
+        };
         foreach (ParticleSystem p in particleSystems)
         {
             p.Play();

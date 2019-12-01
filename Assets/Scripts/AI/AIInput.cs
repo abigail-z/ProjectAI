@@ -11,6 +11,7 @@ public class AIInput : MonoBehaviour
     public Path path;
     public Transform car;
     public CarBehaviour behaviour;
+    public ParticleSystem angerSmoke;
 
     // state machine vars
     private InputStateMachine stateMachine;

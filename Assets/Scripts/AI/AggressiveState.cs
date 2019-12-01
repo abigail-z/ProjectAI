@@ -29,6 +29,7 @@ public class AggressiveState : InputStateMachine.State, ICollisionSubscriber
 
         base.Enter();
 
+        owner.angerSmoke.Play();
         owner.guidePointDistance /= 2;
         elapsedTime = 0;
     }
@@ -103,6 +104,7 @@ public class AggressiveState : InputStateMachine.State, ICollisionSubscriber
     {
         base.Exit();
 
+        owner.angerSmoke.Stop();
         owner.guidePointDistance = guidePointDistance;
     }
 
