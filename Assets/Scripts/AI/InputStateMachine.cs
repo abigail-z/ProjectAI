@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IState
-{
-    void Enter();
-    CarInput Execute();
-    void Exit();
-}
-
 public class InputStateMachine
 {
-    IState currentState;
+    private IState currentState;
+    private readonly List<IState> states = new List<IState>();
 
-    public void ChangeState(IState newState)
+    public void ChangeToState<IState>()
     {
         if (currentState != null)
             currentState.Exit();
 
-        currentState = newState;
+        foreach (InputStateMachine.IState s in states)
+        {
+            if (s is IState)
+            {
+                currentState = s;
+                break;
+            }
+        }
+
         currentState.Enter();
     }
 
@@ -31,5 +33,27 @@ public class InputStateMachine
             acceleration = 0,
             turn = 0
         };
+    }
+
+    public void AddState(IState newState)
+    {
+        states.Add(newState);
+        newState.OnAddToStateMachine(this);
+    }
+
+    public abstract class IState
+    {
+        public InputStateMachine StateMachine { get; private set; }
+
+        public void OnAddToStateMachine(InputStateMachine sm)
+        {
+            StateMachine = sm;
+        }
+
+        public void Enter() { }
+
+        public void Exit() { }
+
+        public abstract CarInput Execute();
     }
 }

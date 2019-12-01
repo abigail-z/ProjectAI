@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalState : IState
+public class NormalState : InputStateMachine.IState
 {
     private readonly AIInput owner;
     private float wander;
@@ -14,9 +14,7 @@ public class NormalState : IState
         this.wanderStrength = wanderStrength;
     }
 
-    public void Enter() {}
-
-    public CarInput Execute()
+    public override CarInput Execute()
     {
         float pathFollowInput = owner.PathFollowInput();
         if (Mathf.Abs(pathFollowInput) > 0)
@@ -40,6 +38,4 @@ public class NormalState : IState
             };
         }
     }
-
-    public void Exit() {}
 }

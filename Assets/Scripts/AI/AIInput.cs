@@ -13,13 +13,14 @@ public class AIInput : MonoBehaviour
     
     // state machine vars
     private InputStateMachine stateMachine;
-    private IState normalState;
+    private InputStateMachine.IState normalState;
 
     void Awake()
     {
         stateMachine = new InputStateMachine();
         normalState = new NormalState(this, wanderStrength);
-        stateMachine.ChangeState(normalState);
+        stateMachine.AddState(normalState);
+        stateMachine.ChangeToState<NormalState>();
     }
 
     void Update()
