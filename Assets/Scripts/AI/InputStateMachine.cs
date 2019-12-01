@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class InputStateMachine
 {
-    private IState currentState;
-    private readonly List<IState> states = new List<IState>();
+    private State currentState;
+    private readonly List<State> states = new List<State>();
 
-    public void ChangeToState<IState>()
+    public void ChangeToState<T>()
     {
         if (currentState != null)
             currentState.Exit();
 
-        foreach (InputStateMachine.IState s in states)
+        foreach (State s in states)
         {
-            if (s is IState)
+            if (s is T)
             {
                 currentState = s;
                 break;
@@ -35,13 +35,13 @@ public class InputStateMachine
         };
     }
 
-    public void AddState(IState newState)
+    public void AddState(State newState)
     {
         states.Add(newState);
         newState.OnAddToStateMachine(this);
     }
 
-    public abstract class IState
+    public abstract class State
     {
         public InputStateMachine StateMachine { get; private set; }
 
@@ -50,9 +50,9 @@ public class InputStateMachine
             StateMachine = sm;
         }
 
-        public void Enter() { }
+        public virtual void Enter() { }
 
-        public void Exit() { }
+        public virtual void Exit() { }
 
         public abstract CarInput Execute();
     }

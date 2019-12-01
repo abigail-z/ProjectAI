@@ -2,32 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalState : InputStateMachine.State, ICollisionSubscriber
+public class AggressiveState : InputStateMachine.State
 {
     private readonly AIInput owner;
     private float wander;
     private readonly float wanderStrength;
-    private readonly int collisionsUntilAggressive;
-    private int collisions;
 
-    public NormalState(AIInput owner, float wanderStrength, int collisionsUntilAggressive)
+    public AggressiveState(AIInput owner, float wanderStrength)
     {
         this.owner = owner;
         this.wanderStrength = wanderStrength;
-        this.collisionsUntilAggressive = collisionsUntilAggressive;
-    }
-
-    public override void Enter()
-    {
-        collisions = 0;
     }
 
     public override CarInput Execute()
     {
-        if (collisions > collisionsUntilAggressive)
-        {
-            StateMachine.ChangeToState<AggressiveState>();
-        }
+        Debug.Log("I'm mad now!");
 
         float pathFollowInput = owner.PathFollowInput();
         if (Mathf.Abs(pathFollowInput) > 0)
@@ -49,14 +38,6 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
                 acceleration = 1,
                 turn = wander
             };
-        }
-    }
-
-    public void OnCollision(Collision col)
-    {
-        if (col.transform.CompareTag("Car"))
-        {
-            collisions += 1;
         }
     }
 }

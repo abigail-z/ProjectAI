@@ -7,19 +7,27 @@ public class AIInput : MonoBehaviour
     public float guidePointDistance;
     public float feelerRadius;
     public float wanderStrength;
+    public int collisionsUntilAggressive;
+    public float aggressiveTime;
     public Path path;
     public Transform car;
     public CarBehaviour behaviour;
-    
+
     // state machine vars
     private InputStateMachine stateMachine;
-    private InputStateMachine.IState normalState;
 
     void Awake()
     {
+        CollisionNotifier collisionNotifier = transform.Find("Sphere").GetComponent<CollisionNotifier>();
         stateMachine = new InputStateMachine();
-        normalState = new NormalState(this, wanderStrength);
+
+        NormalState normalState = new NormalState(this, wanderStrength, collisionsUntilAggressive);
+        collisionNotifier.Subscribe(normalState);
         stateMachine.AddState(normalState);
+
+        AggressiveState aggressiveState = new AggressiveState(this, wanderStrength);
+        stateMachine.AddState(aggressiveState);
+
         stateMachine.ChangeToState<NormalState>();
     }
 

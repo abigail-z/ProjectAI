@@ -46,8 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a6054c679f60e4b9165b268c9231db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnInput: 0
-  accelerationInput: 0
   maxTurnRate: 70
   accelForce: 30
   requiredTurningVelocity: 6
@@ -74,6 +72,8 @@ MonoBehaviour:
   guidePointDistance: 10
   feelerRadius: 0.5
   wanderStrength: 2
+  collisionsUntilAggressive: 5
+  aggressiveTime: 5
   path: {fileID: 0}
   car: {fileID: 5839326424041226411}
   behaviour: {fileID: 3937480830234271442}
@@ -88,9 +88,10 @@ GameObject:
   - component: {fileID: 3937480830246137289}
   - component: {fileID: 3937480830246137302}
   - component: {fileID: 3937480830246137303}
+  - component: {fileID: 1998927525}
   m_Layer: 10
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,6 +139,18 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &1998927525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3937480830246137290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce073113218c80a4cb338906a65778fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3937480830684523582
 PrefabInstance:
   m_ObjectHideFlags: 0

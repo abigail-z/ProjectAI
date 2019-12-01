@@ -3031,6 +3031,10 @@ PrefabInstance:
       propertyPath: path
       value: 
       objectReference: {fileID: 2052532385}
+    - target: {fileID: 733753305, guid: 6be11f0c78d162d44aacba4d2172dc7b, type: 3}
+      propertyPath: collisionsUntilAggressive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6be11f0c78d162d44aacba4d2172dc7b, type: 3}
 --- !u!54 &3937480830063101139 stripped
