@@ -49,6 +49,8 @@ MonoBehaviour:
   maxTurnRate: 70
   accelForce: 30
   requiredTurningVelocity: 6
+  boostCount: 0
+  boostAmount: 1
   maxTopTilt: 10
   topTiltDelta: 70
   maxTiltSpeed: 6
@@ -73,10 +75,13 @@ MonoBehaviour:
   feelerRadius: 0.5
   wanderStrength: 2
   aggressiveTime: 5
-  path: {fileID: 0}
+  currentPath: {fileID: 0}
+  fastPath: {fileID: 0}
+  coinPath: {fileID: 0}
   car: {fileID: 5839326424041226411}
   behaviour: {fileID: 3937480830234271442}
   angerSmoke: {fileID: 4911255082008015718}
+  otherCar: {fileID: 0}
 --- !u!1 &3937480830246137290
 GameObject:
   m_ObjectHideFlags: 0

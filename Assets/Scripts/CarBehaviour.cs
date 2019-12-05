@@ -15,6 +15,9 @@ public class CarBehaviour : MonoBehaviour
     public float maxTurnRate;
     public float accelForce;
     public float requiredTurningVelocity;
+    [HideInInspector]
+    public int boostCount;
+    public float boostAmount;
     
     // chassis tilting vars
     public float maxTopTilt;
@@ -82,8 +85,8 @@ public class CarBehaviour : MonoBehaviour
     void FixedUpdate()
     {
         // acceleration
-        Vector3 turn = car.forward * input.acceleration;
-        sphereRB.AddForce(turn * accelForce, ForceMode.Acceleration);
+        Vector3 accel = car.forward * input.acceleration;
+        sphereRB.AddForce(accel * (accelForce + boostCount * boostAmount), ForceMode.Acceleration);
     }
 
     void Update()
@@ -103,7 +106,8 @@ public class CarBehaviour : MonoBehaviour
 
         // animating car chassis
         float perpendicularSpeed = -Vector3.Dot(car.right, sphereRB.velocity);
-        Quaternion topTargetRot = Quaternion.AngleAxis((perpendicularSpeed / maxTiltSpeed) * maxTopTilt, Vector3.forward);
+        float topTargetRotDeg = Mathf.Clamp(perpendicularSpeed / maxTiltSpeed * maxTopTilt, -maxTopTilt, maxTopTilt);
+        Quaternion topTargetRot = Quaternion.AngleAxis(topTargetRotDeg, Vector3.forward);
         chassis.localRotation = Quaternion.RotateTowards(chassis.localRotation, topTargetRot, topTiltDelta * Time.deltaTime);
 
         // animating tires

@@ -92,6 +92,37 @@ public class Path : MonoBehaviour
         }
     }
 
+    public bool CheckIfOnCriticalSection(Vector3 point)
+    {
+        int index = 0;
+        float lowestMagnitude = float.MaxValue;
+
+        // first, grab the closest line and line point
+        for (int i = 0; i < nodes.Count; ++i)
+        {
+            // first grab 2 nodes in sequence
+            // this will represent our line
+            PathNode startNode = GetNode(i);
+            PathNode endNode = GetNode(i + 1);
+
+            // find the closest point on this line
+            Vector3 lineDir = (endNode.Pos - startNode.Pos).normalized;
+            float maxDistance = (endNode.Pos - startNode.Pos).magnitude;
+            float distance = Mathf.Clamp(Vector3.Dot(point - startNode.Pos, lineDir), 0, maxDistance);
+            Vector3 pointOnLine = startNode.Pos + lineDir * distance;
+
+            // check if the line point is the closest one, if it is store it
+            float magnitude = (point - pointOnLine).magnitude;
+            if (magnitude < lowestMagnitude)
+            {
+                index = i;
+                lowestMagnitude = magnitude;
+            }
+        }
+
+        return GetNode(index).criticalSection;
+    }
+
     PathNode GetNode(int i)
     {
         return nodes[i % nodes.Count];

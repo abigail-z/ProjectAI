@@ -8,10 +8,13 @@ public class AIInput : MonoBehaviour
     public float feelerRadius;
     public float wanderStrength;
     public float aggressiveTime;
-    public Path path;
+    public Path currentPath;
+    public Path fastPath;
+    public Path coinPath;
     public Transform car;
     public CarBehaviour behaviour;
     public ParticleSystem angerSmoke;
+    public CarBehaviour otherCar;
 
     // state machine vars
     private InputStateMachine stateMachine;
@@ -32,12 +35,24 @@ public class AIInput : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!currentPath.CheckIfOnCriticalSection(car.position))
+        {
+            if (otherCar.boostCount > behaviour.boostCount)
+            {
+                currentPath = coinPath;
+            }
+            else
+            {
+                currentPath = fastPath;
+            }
+        }
+
         behaviour.ApplyInput(stateMachine.Update());
     }
 
     public float PathFollowInput()
     {
-        PathPointInfo goal = path.FindClosestLeadingPoint(car.position, guidePointDistance);
+        PathPointInfo goal = currentPath.FindClosestLeadingPoint(car.position, guidePointDistance);
 
         // match car height to goal height
         Vector3 carPos = car.position;
@@ -57,7 +72,7 @@ public class AIInput : MonoBehaviour
             // check if the feeler falls outside the path
             intersect.y = goal.point.y;
             float feelerDistance = (intersect - goal.point).magnitude;
-            if (feelerDistance + feelerRadius > path.radius)
+            if (feelerDistance + feelerRadius > currentPath.radius)
             {
                 // if it does, we're going to hit a wall, time to correct
                 doTurn = true;
@@ -86,7 +101,7 @@ public class AIInput : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        PathPointInfo goal = path.FindClosestLeadingPoint(car.position, guidePointDistance);
+        PathPointInfo goal = currentPath.FindClosestLeadingPoint(car.position, guidePointDistance);
         Vector3 perpendicular = new Vector3(goal.direction.z, 0, -goal.direction.x);
         Vector3 carPos = car.position;
         carPos.y = goal.point.y;

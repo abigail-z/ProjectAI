@@ -49,6 +49,8 @@ MonoBehaviour:
   maxTurnRate: 70
   accelForce: 30
   requiredTurningVelocity: 6
+  boostCount: 0
+  boostAmount: 1
   maxTopTilt: 10
   topTiltDelta: 70
   maxTiltSpeed: 6

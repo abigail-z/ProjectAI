@@ -7,6 +7,7 @@ public class NormalState : InputStateMachine.State
     private readonly AIInput owner;
     private float wander;
     private readonly float wanderStrength;
+    private readonly LayerMask coinMask;
     private readonly CollisionNotifier collisionNotifier;
     private readonly CollisionNotifier.OnCollision collisionDelegate;
 
@@ -15,6 +16,7 @@ public class NormalState : InputStateMachine.State
         this.owner = owner;
         this.wanderStrength = wanderStrength;
         this.collisionNotifier = collisionNotifier;
+        coinMask = LayerMask.GetMask("Coin");
         collisionDelegate = new CollisionNotifier.OnCollision(OnCollision);
     }
 
@@ -47,7 +49,32 @@ public class NormalState : InputStateMachine.State
         }
         else
         {
-            // apply random wander if we did not turn
+            // find closest coin
+            Vector3 closest = Vector3.zero;
+            Collider[] colliders = Physics.OverlapSphere(owner.car.position, 10, coinMask);
+            foreach (Collider col in colliders)
+            {
+                if (col.transform.root != owner.transform && (col.transform.position - owner.car.position).magnitude > closest.magnitude)
+                {
+                    closest = col.transform.position - owner.car.position;
+                }
+            }
+
+            // try to steer into it
+            float dir = Vector3.Dot(owner.car.right, closest);
+            if (Mathf.Abs(dir) > Mathf.Epsilon)
+            {
+                // get sign of direction
+                dir /= Mathf.Abs(dir);
+
+                return new CarInput
+                {
+                    acceleration = 0.95f,
+                    turn = dir
+                };
+            }
+
+            // apply random wander if we did not turn for any other reason
             wander += Random.Range(-1f, 1f) * wanderStrength * Time.fixedDeltaTime;
             return new CarInput
             {
