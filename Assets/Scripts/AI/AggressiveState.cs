@@ -25,10 +25,6 @@ public class AggressiveState : InputStateMachine.State
 
     public override void Enter()
     {
-#if UNITY_EDITOR
-        Debug.Log("Aggressive State");
-#endif
-
         base.Enter();
 
         owner.angerSmoke.Play();

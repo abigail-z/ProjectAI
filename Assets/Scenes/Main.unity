@@ -3336,7 +3336,7 @@ GameObject:
   - component: {fileID: 1404397255}
   - component: {fileID: 1404397256}
   m_Layer: 0
-  m_Name: Inner Path
+  m_Name: Fast Path
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5141,7 +5141,7 @@ GameObject:
   - component: {fileID: 2052532384}
   - component: {fileID: 2052532385}
   m_Layer: 0
-  m_Name: Outer Path
+  m_Name: Coin Path
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -23,10 +23,6 @@ public class NormalState : InputStateMachine.State
 
     public override void Enter()
     {
-#if UNITY_EDITOR
-        Debug.Log("Normal State");
-#endif
-
         base.Enter();
 
         collisionNotifier.CollisionEvent += collisionDelegate;
