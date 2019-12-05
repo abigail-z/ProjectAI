@@ -11,19 +11,18 @@ public class CountdownBehaviour : MonoBehaviour
     public float beforeCountdownTime;
     public float perLightTime;
     public float holdGreenTime;
-    private StartLightBehaviour[] startLights;
+    public StartLightBehaviour[] startLights;
 
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
             Destroy(this);
-            return;
         }
-
-        Instance = this;
-
-        startLights = transform.GetComponentsInChildren<StartLightBehaviour>();
+        else
+        {
+            Instance = this;
+        }
     }
 
     void Start()
