@@ -4,33 +4,11 @@ using UnityEngine;
 
 public class CollisionNotifier : MonoBehaviour
 {
-    private List<ICollisionSubscriber> subscribers;
-    
-    void Awake()
-    {
-        subscribers = new List<ICollisionSubscriber>();
-    }
+    public delegate void OnCollision(Collision col);
+    public event OnCollision CollisionEvent;
 
     void OnCollisionEnter(Collision col)
     {
-        foreach (ICollisionSubscriber sub in subscribers)
-        {
-            sub.OnCollision(col);
-        }
+        CollisionEvent(col);
     }
-
-    public void Subscribe(ICollisionSubscriber sub)
-    {
-        subscribers.Add(sub);
-    }
-
-    public void Unsubscribe(ICollisionSubscriber sub)
-    {
-        subscribers.Remove(sub);
-    }
-}
-
-public interface ICollisionSubscriber
-{
-    void OnCollision(Collision col);
 }

@@ -2,26 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalState : InputStateMachine.State, ICollisionSubscriber
+public class NormalState : InputStateMachine.State
 {
     private readonly AIInput owner;
     private float wander;
     private readonly float wanderStrength;
+    private readonly CollisionNotifier collisionNotifier;
+    private readonly CollisionNotifier.OnCollision collisionDelegate;
 
-    public NormalState(AIInput owner, float wanderStrength)
+    public NormalState(AIInput owner, float wanderStrength, CollisionNotifier collisionNotifier)
     {
         this.owner = owner;
         this.wanderStrength = wanderStrength;
+        this.collisionNotifier = collisionNotifier;
+        collisionDelegate = new CollisionNotifier.OnCollision(OnCollision);
     }
 
-#if UNITY_EDITOR
+
     public override void Enter()
     {
+#if UNITY_EDITOR
+        Debug.Log("Normal State");
+#endif
+
         base.Enter();
 
-        Debug.Log("Normal State");
+        collisionNotifier.CollisionEvent += collisionDelegate;
     }
-#endif
+
 
     public override CarInput Execute()
     {
@@ -48,8 +56,14 @@ public class NormalState : InputStateMachine.State, ICollisionSubscriber
             };
         }
     }
+    public override void Exit()
+    {
+        base.Exit();
 
-    public void OnCollision(Collision col)
+        collisionNotifier.CollisionEvent -= collisionDelegate;
+    }
+
+    void OnCollision(Collision col)
     {
         // only keep track of collisions with cars
         if (Active && col.transform.CompareTag("Car"))

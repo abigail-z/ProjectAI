@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AggressiveState : InputStateMachine.State, ICollisionSubscriber
+public class AggressiveState : InputStateMachine.State
 {
     private readonly AIInput owner;
     private float wander;
@@ -11,14 +11,18 @@ public class AggressiveState : InputStateMachine.State, ICollisionSubscriber
     private readonly float guidePointDistance;
     private readonly float maxTime;
     private float elapsedTime;
+    private readonly CollisionNotifier collisionNotifier;
+    private readonly CollisionNotifier.OnCollision collisionDelegate;
 
-    public AggressiveState(AIInput owner, float wanderStrength, float guidePointDistance, float time)
+    public AggressiveState(AIInput owner, float wanderStrength, float guidePointDistance, float time, CollisionNotifier collisionNotifier)
     {
         this.owner = owner;
         this.wanderStrength = wanderStrength;
         this.guidePointDistance = guidePointDistance;
         maxTime = time;
         carMask = LayerMask.GetMask("Car");
+        this.collisionNotifier = collisionNotifier;
+        collisionDelegate = new CollisionNotifier.OnCollision(OnCollision);
     }
 
     public override void Enter()
@@ -32,6 +36,7 @@ public class AggressiveState : InputStateMachine.State, ICollisionSubscriber
         owner.angerSmoke.Play();
         owner.guidePointDistance /= 2;
         elapsedTime = 0;
+        collisionNotifier.CollisionEvent += collisionDelegate;
     }
 
     public override CarInput Execute()
@@ -106,9 +111,10 @@ public class AggressiveState : InputStateMachine.State, ICollisionSubscriber
 
         owner.angerSmoke.Stop();
         owner.guidePointDistance = guidePointDistance;
+        collisionNotifier.CollisionEvent -= collisionDelegate;
     }
 
-    public void OnCollision(Collision col)
+    void OnCollision(Collision col)
     {
         // only keep track of collisions with cars
         if (Active && col.transform.CompareTag("Car"))

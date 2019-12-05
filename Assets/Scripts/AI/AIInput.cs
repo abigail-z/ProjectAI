@@ -21,12 +21,10 @@ public class AIInput : MonoBehaviour
         CollisionNotifier collisionNotifier = transform.Find("Sphere").GetComponent<CollisionNotifier>();
         stateMachine = new InputStateMachine();
 
-        NormalState normalState = new NormalState(this, wanderStrength);
-        collisionNotifier.Subscribe(normalState);
+        NormalState normalState = new NormalState(this, wanderStrength, collisionNotifier);
         stateMachine.AddState(normalState);
 
-        AggressiveState aggressiveState = new AggressiveState(this, wanderStrength, guidePointDistance, aggressiveTime);
-        collisionNotifier.Subscribe(aggressiveState);
+        AggressiveState aggressiveState = new AggressiveState(this, wanderStrength, guidePointDistance, aggressiveTime, collisionNotifier);
         stateMachine.AddState(aggressiveState);
 
         stateMachine.ChangeToState<NormalState>();
