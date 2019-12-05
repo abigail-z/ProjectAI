@@ -19,8 +19,12 @@ public class AIInput : MonoBehaviour
     // state machine vars
     private InputStateMachine stateMachine;
 
+    // decision tree vars
+    private Decision<AIInput, Path> treeRoot;
+
     void Awake()
     {
+        // state machine setup
         CollisionNotifier collisionNotifier = transform.Find("Sphere").GetComponent<CollisionNotifier>();
         stateMachine = new InputStateMachine();
 
@@ -31,21 +35,27 @@ public class AIInput : MonoBehaviour
         stateMachine.AddState(aggressiveState);
 
         stateMachine.ChangeToState<NormalState>();
+
+        // decision tree setup
+        Decision<AIInput, Path> speedCheckBranch = new DecisionQuery<AIInput, Path>
+        {
+            Test = (ai) => ai.otherCar.boostCount > ai.behaviour.boostCount,
+            Positive = new DecisionResult<AIInput, Path>(coinPath),
+            Negative = new DecisionResult<AIInput, Path>(fastPath)
+        };
+
+        treeRoot = new DecisionQuery<AIInput, Path>
+        {
+            Test = (ai) => ai.currentPath.CheckIfOnCriticalSection(ai.car.position),
+            Positive = new DecisionResult<AIInput, Path>(null),
+            Negative = speedCheckBranch
+        };
     }
 
     void FixedUpdate()
     {
-        if (!currentPath.CheckIfOnCriticalSection(car.position))
-        {
-            if (otherCar.boostCount > behaviour.boostCount)
-            {
-                currentPath = coinPath;
-            }
-            else
-            {
-                currentPath = fastPath;
-            }
-        }
+        Path newPath = treeRoot.Evaluate(this);
+        currentPath = newPath ?? currentPath;
 
         behaviour.ApplyInput(stateMachine.Update());
     }
