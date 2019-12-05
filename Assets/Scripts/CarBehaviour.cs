@@ -84,6 +84,12 @@ public class CarBehaviour : MonoBehaviour
 
     void FixedUpdate()
     {
+        // don't allow applying forces if input is blocked
+        if (CountdownBehaviour.Instance.InputBlocked)
+        {
+            return;
+        }
+
         // acceleration
         Vector3 accel = car.forward * input.acceleration;
         sphereRB.AddForce(accel * (accelForce + boostCount * boostAmount), ForceMode.Acceleration);
@@ -95,7 +101,7 @@ public class CarBehaviour : MonoBehaviour
         float turnRate = maxTurnRate * Mathf.Clamp(sphereRB.velocity.magnitude / requiredTurningVelocity, 0, maxTurnRate);
 
         car.position = sphere.position + offset;
-        if (Vector3.Dot(car.forward, sphereRB.velocity) >= 0)
+        if (!CountdownBehaviour.Instance.InputBlocked && Vector3.Dot(car.forward, sphereRB.velocity) >= 0)
         {
             car.forward = Quaternion.AngleAxis(input.turn * turnRate * Time.deltaTime, Vector3.up) * car.forward;
         }
