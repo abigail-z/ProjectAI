@@ -7,7 +7,6 @@ public class AggressiveState : InputStateMachine.State
     private readonly AIInput owner;
     private float wander;
     private readonly float wanderStrength;
-    private readonly LayerMask carMask;
     private readonly float guidePointDistance;
     private readonly float maxTime;
     private float elapsedTime;
@@ -20,7 +19,6 @@ public class AggressiveState : InputStateMachine.State
         this.wanderStrength = wanderStrength;
         this.guidePointDistance = guidePointDistance;
         maxTime = time;
-        carMask = LayerMask.GetMask("Car");
         this.collisionNotifier = collisionNotifier;
         collisionDelegate = new CollisionNotifier.OnCollision(OnCollision);
     }
@@ -62,37 +60,31 @@ public class AggressiveState : InputStateMachine.State
         }
         else
         {
-            // find closest car
-            Vector3 closest = Vector3.zero;
-            Collider[] colliders = Physics.OverlapSphere(owner.car.position, 10, carMask);
-            foreach (Collider col in colliders)
+            // if the opponent is nearby, steer into them
+            Vector3 carOffset = owner.otherCar.car.position - owner.car.position;
+            if (carOffset.magnitude < 10)
             {
-                if (col.transform.root != owner.transform && (col.transform.position - owner.car.position).magnitude > closest.magnitude)
+                // try to steer into it
+                float dir = Vector3.Dot(owner.car.right, carOffset);
+                if (Mathf.Abs(dir) > Mathf.Epsilon)
                 {
-                    closest = col.transform.position - owner.car.position;
+                    // get sign of direction
+                    dir /= Mathf.Abs(dir);
+
+                    // if the target is behind us, slow down
+                    float accel = 1;
+                    float lead = Vector3.Dot(owner.car.forward, carOffset);
+                    if (lead < 0)
+                    {
+                        accel = 0.9f;
+                    }
+
+                    return new CarInput
+                    {
+                        acceleration = accel,
+                        turn = dir
+                    };
                 }
-            }
-
-            // try to steer into it
-            float dir = Vector3.Dot(owner.car.right, closest);
-            if (Mathf.Abs(dir) > Mathf.Epsilon)
-            {
-                // get sign of direction
-                dir /= Mathf.Abs(dir);
-
-                // if the target is behind us, slow down
-                float accel = 1;
-                float lead = Vector3.Dot(owner.car.forward, closest);
-                if (lead < 0)
-                {
-                    accel = 0.9f;
-                }
-
-                return new CarInput
-                {
-                    acceleration = accel,
-                    turn = dir
-                };
             }
 
             // apply random wander if we did not turn for any other reason

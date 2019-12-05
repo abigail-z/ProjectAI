@@ -6,7 +6,8 @@ public class CarBehaviour : MonoBehaviour
 {
     // top level transforms
     private Transform sphere;
-    private Transform car;
+    [HideInInspector]
+    public Transform car;
 
     // input vars
     private CarInput input;
