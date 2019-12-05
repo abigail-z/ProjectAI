@@ -75,6 +75,7 @@ MonoBehaviour:
   feelerRadius: 0.5
   wanderStrength: 2
   aggressiveTime: 5
+  minBoost: 5
   currentPath: {fileID: 0}
   fastPath: {fileID: 0}
   coinPath: {fileID: 0}

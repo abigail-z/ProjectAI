@@ -4797,7 +4797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee5abf0dd5a653345b84a8079a5de0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beforeCountdownTime: 2
+  beforeCountdownTime: 1.5
   perLightTime: 1
   holdGreenTime: 3
 --- !u!1001 &1973590070
@@ -5540,21 +5540,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2666899469813152435, guid: c2009372c589f4ba6b0432583b9a0d41,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2666899469813152435, guid: c2009372c589f4ba6b0432583b9a0d41,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2666899469813152435, guid: c2009372c589f4ba6b0432583b9a0d41,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2009372c589f4ba6b0432583b9a0d41, type: 3}
 --- !u!1001 &2173012843840715425
@@ -5709,10 +5694,6 @@ PrefabInstance:
       propertyPath: otherCar
       value: 
       objectReference: {fileID: 362465512}
-    - target: {fileID: 733753305, guid: 6be11f0c78d162d44aacba4d2172dc7b, type: 3}
-      propertyPath: minBoost
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6be11f0c78d162d44aacba4d2172dc7b, type: 3}
 --- !u!54 &3937480830063101139 stripped
