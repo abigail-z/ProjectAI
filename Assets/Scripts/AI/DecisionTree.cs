@@ -1,6 +1,6 @@
-﻿public abstract class Decision<Client, T>
+﻿public abstract class Decision<Client, ReturnType>
 {
-    public abstract T Evaluate(Client client);
+    public abstract ReturnType Evaluate(Client client);
 }
 
 public class DecisionQuery<Client, ReturnType> : Decision<Client, ReturnType>

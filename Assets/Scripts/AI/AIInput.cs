@@ -8,6 +8,7 @@ public class AIInput : MonoBehaviour
     public float feelerRadius;
     public float wanderStrength;
     public float aggressiveTime;
+    public int minBoost;
     public Path currentPath;
     public Path fastPath;
     public Path coinPath;
@@ -37,18 +38,25 @@ public class AIInput : MonoBehaviour
         stateMachine.ChangeToState<NormalState>();
 
         // decision tree setup
-        Decision<AIInput, Path> speedCheckBranch = new DecisionQuery<AIInput, Path>
+        Decision<AIInput, Path> speedComparisonBranch = new DecisionQuery<AIInput, Path>
         {
             Test = (ai) => ai.otherCar.boostCount > ai.behaviour.boostCount,
             Positive = new DecisionResult<AIInput, Path>(coinPath),
             Negative = new DecisionResult<AIInput, Path>(fastPath)
         };
 
+        Decision<AIInput, Path> minCountBranch = new DecisionQuery<AIInput, Path>
+        {
+            Test = (ai) => ai.behaviour.boostCount < ai.minBoost,
+            Positive = new DecisionResult<AIInput, Path>(coinPath),
+            Negative = speedComparisonBranch
+        };
+
         treeRoot = new DecisionQuery<AIInput, Path>
         {
             Test = (ai) => ai.currentPath.CheckIfOnCriticalSection(ai.car.position),
             Positive = new DecisionResult<AIInput, Path>(null),
-            Negative = speedCheckBranch
+            Negative = minCountBranch
         };
     }
 
