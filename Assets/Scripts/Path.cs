@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Path : MonoBehaviour
 {
-    public List<Transform> nodes;
+    public List<PathNode> nodes;
     public float radius;
 
     public PathPointInfo FindClosestLeadingPoint(Vector3 point, float leadDistance)
@@ -18,13 +18,14 @@ public class Path : MonoBehaviour
         {
             // first grab 2 nodes in sequence
             // this will represent our line
-            Vector3 startNode = GetNode(i);
-            Vector3 endNode = GetNode(i + 1);
+            PathNode startNode = GetNode(i);
+            PathNode endNode = GetNode(i + 1);
 
             // find the closest point on this line
-            Vector3 lineDir = (endNode - startNode).normalized;
-            float distance = Vector3.Dot(point - startNode, lineDir);
-            Vector3 pointOnLine = startNode + lineDir * distance;
+            Vector3 lineDir = (endNode.Pos - startNode.Pos).normalized;
+            float maxDistance = (endNode.Pos - startNode.Pos).magnitude;
+            float distance = Mathf.Clamp(Vector3.Dot(point - startNode.Pos, lineDir), 0, maxDistance);
+            Vector3 pointOnLine = startNode.Pos + lineDir * distance;
 
             // check if the line point is the closest one, if it is store it
             float magnitude = (point - pointOnLine).magnitude;
@@ -41,11 +42,11 @@ public class Path : MonoBehaviour
 
     PathPointInfo GetLeadingPointAndDir(int i, float leadDistance, float distanceOnLine)
     {
-        Vector3 startNode = GetNode(i);
-        Vector3 endNode = GetNode(i + 1);
+        PathNode startNode = GetNode(i);
+        PathNode endNode = GetNode(i + 1);
 
-        Vector3 lineDir = (endNode - startNode).normalized;
-        float lineLength = (endNode - startNode).magnitude;
+        Vector3 lineDir = (endNode.Pos - startNode.Pos).normalized;
+        float lineLength = (endNode.Pos - startNode.Pos).magnitude;
 
         // if lead point overruns the current line, bend it around corners
         if (distanceOnLine + leadDistance > lineLength)
@@ -53,7 +54,7 @@ public class Path : MonoBehaviour
             float overrunDistance = distanceOnLine + leadDistance - lineLength;
             startNode = endNode;
             endNode = GetNode(i + 2);
-            lineLength = (endNode - startNode).magnitude;
+            lineLength = (endNode.Pos - startNode.Pos).magnitude;
             // keep bending around corners until there's no overrun
             int j = 3;
             while (overrunDistance > lineLength)
@@ -63,24 +64,25 @@ public class Path : MonoBehaviour
                 // get the next line and calculate its length
                 startNode = endNode;
                 endNode = GetNode(i + j);
-                lineLength = (endNode - startNode).magnitude;
+                lineLength = (endNode.Pos - startNode.Pos).magnitude;
                 // update iterator
                 j += 1;
             }
 
-            lineDir = (endNode - startNode).normalized;
-            Vector3 leadingPoint = startNode + lineDir * overrunDistance;
+            lineDir = (endNode.Pos - startNode.Pos).normalized;
+            Vector3 leadingPoint = startNode.Pos + lineDir * overrunDistance;
 
             return new PathPointInfo
             {
                 point = leadingPoint,
-                direction = lineDir
+                direction = lineDir,
+                criticalSection = startNode.criticalSection
             };
         }
         else
         {
             // otherwise, map it on this line as expected
-            Vector3 leadingPoint = startNode + lineDir * distanceOnLine + lineDir * leadDistance;
+            Vector3 leadingPoint = startNode.Pos + lineDir * distanceOnLine + lineDir * leadDistance;
 
             return new PathPointInfo
             {
@@ -90,9 +92,9 @@ public class Path : MonoBehaviour
         }
     }
 
-    Vector3 GetNode(int i)
+    PathNode GetNode(int i)
     {
-        return nodes[i % nodes.Count].position;
+        return nodes[i % nodes.Count];
     }
 
 #if UNITY_EDITOR
@@ -101,15 +103,15 @@ public class Path : MonoBehaviour
         for (int i = 0; i < nodes.Count; ++i)
         {
             // get nodes
-            Vector3 currentNode = nodes[i].position;
+            Vector3 currentNode = nodes[i].Pos;
             Vector3 nextNode;
             if (i == nodes.Count - 1)
             {
-                nextNode = nodes[0].position;
+                nextNode = nodes[0].Pos;
             }
             else
             {
-                nextNode = nodes[i + 1].position;
+                nextNode = nodes[i + 1].Pos;
             }
             // draw node center
             Gizmos.color = Color.green;
