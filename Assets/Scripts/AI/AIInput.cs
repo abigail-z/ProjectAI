@@ -41,22 +41,22 @@ public class AIInput : MonoBehaviour
         Decision<AIInput, Path> speedComparisonBranch = new DecisionQuery<AIInput, Path>
         {
             Test = (ai) => ai.otherCar.boostCount > ai.behaviour.boostCount,
-            positive = new DecisionResult<AIInput, Path>(coinPath),
-            negative = new DecisionResult<AIInput, Path>(fastPath)
+            Positive = new DecisionResult<AIInput, Path>(coinPath),
+            Negative = new DecisionResult<AIInput, Path>(fastPath)
         };
 
         Decision<AIInput, Path> minCountBranch = new DecisionQuery<AIInput, Path>
         {
             Test = (ai) => ai.behaviour.boostCount < ai.minBoost,
-            positive = new DecisionResult<AIInput, Path>(coinPath),
-            negative = speedComparisonBranch
+            Positive = new DecisionResult<AIInput, Path>(coinPath),
+            Negative = speedComparisonBranch
         };
 
         treeRoot = new DecisionQuery<AIInput, Path>
         {
             Test = (ai) => ai.currentPath.CheckIfOnCriticalSection(ai.car.position),
-            positive = new DecisionResult<AIInput, Path>(null),
-            negative = minCountBranch
+            Positive = new DecisionResult<AIInput, Path>(null),
+            Negative = minCountBranch
         };
     }
 
