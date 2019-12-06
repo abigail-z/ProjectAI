@@ -23,6 +23,7 @@ public class NormalState : InputStateMachine.State
 
     public override void Enter()
     {
+        // subscribe to collision notifier
         collisionNotifier.CollisionEvent += collisionDelegate;
     }
 
@@ -79,6 +80,7 @@ public class NormalState : InputStateMachine.State
     }
     public override void Exit()
     {
+        // unsubsubscribe from collision notifier
         collisionNotifier.CollisionEvent -= collisionDelegate;
     }
 
