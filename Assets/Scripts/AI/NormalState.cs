@@ -23,8 +23,6 @@ public class NormalState : InputStateMachine.State
 
     public override void Enter()
     {
-        base.Enter();
-
         collisionNotifier.CollisionEvent += collisionDelegate;
     }
 
@@ -81,15 +79,13 @@ public class NormalState : InputStateMachine.State
     }
     public override void Exit()
     {
-        base.Exit();
-
         collisionNotifier.CollisionEvent -= collisionDelegate;
     }
 
     void OnCollision(Collision col)
     {
         // only keep track of collisions with cars
-        if (Active && col.transform.CompareTag("Car"))
+        if (col.transform.CompareTag("Car"))
         {
             StateMachine.ChangeToState<AggressiveState>();
         }

@@ -25,8 +25,6 @@ public class AggressiveState : InputStateMachine.State
 
     public override void Enter()
     {
-        base.Enter();
-
         owner.angerSmoke.Play();
         owner.guidePointDistance /= 2;
         elapsedTime = 0;
@@ -95,8 +93,6 @@ public class AggressiveState : InputStateMachine.State
 
     public override void Exit()
     {
-        base.Exit();
-
         owner.angerSmoke.Stop();
         owner.guidePointDistance = guidePointDistance;
         collisionNotifier.CollisionEvent -= collisionDelegate;
@@ -105,7 +101,7 @@ public class AggressiveState : InputStateMachine.State
     void OnCollision(Collision col)
     {
         // only keep track of collisions with cars
-        if (Active && col.transform.CompareTag("Car"))
+        if (col.transform.CompareTag("Car"))
         {
             elapsedTime = 0;
         }
