@@ -30,7 +30,6 @@ public class InputStateMachine
         {
             if (s is T)
             {
-
                 if (currentState != null)
                     currentState.Exit();
                 currentState = s;
