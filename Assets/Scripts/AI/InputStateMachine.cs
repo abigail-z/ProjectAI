@@ -32,12 +32,13 @@ public class InputStateMachine
             {
                 if (currentState != null)
                     currentState.Exit();
+
                 currentState = s;
-                break;
+
+                currentState.Enter();
+                return;
             }
         }
-
-        currentState.Enter();
     }
 
     public abstract class State
