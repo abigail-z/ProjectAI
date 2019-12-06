@@ -5,8 +5,8 @@
 
 public class DecisionQuery<Client, ReturnType> : Decision<Client, ReturnType>
 {
-    public Decision<Client, ReturnType> Positive { get; set; }
-    public Decision<Client, ReturnType> Negative { get; set; }
+    public Decision<Client, ReturnType> positive;
+    public Decision<Client, ReturnType> negative;
     public DecisionTest Test { get; set; }
 
     public override ReturnType Evaluate(Client client)
@@ -15,11 +15,11 @@ public class DecisionQuery<Client, ReturnType> : Decision<Client, ReturnType>
 
         if (result)
         {
-            return Positive.Evaluate(client);
+            return positive.Evaluate(client);
         }
         else
         {
-            return Negative.Evaluate(client);
+            return negative.Evaluate(client);
         }
     }
 
