@@ -132,8 +132,9 @@ public class AIInput : MonoBehaviour
             vehiclePoint.y = intersect.y = goal.point.y;
             Gizmos.color = Color.red;
             Gizmos.DrawLine(goal.point, intersect);
-            Gizmos.DrawLine(vehiclePoint, intersect);
             Gizmos.DrawWireSphere(intersect, feelerRadius);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(vehiclePoint, intersect);
         }
 
         Gizmos.color = Color.white;
