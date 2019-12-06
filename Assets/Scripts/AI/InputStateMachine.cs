@@ -7,21 +7,10 @@ public class InputStateMachine
     private State currentState;
     private readonly List<State> states = new List<State>();
 
-    public void ChangeToState<T>()
+    public void AddState(State newState)
     {
-        if (currentState != null)
-            currentState.Exit();
-
-        foreach (State s in states)
-        {
-            if (s is T)
-            {
-                currentState = s;
-                break;
-            }
-        }
-
-        currentState.Enter();
+        states.Add(newState);
+        newState.OnAddToStateMachine(this);
     }
 
     public CarInput Update()
@@ -35,10 +24,21 @@ public class InputStateMachine
         };
     }
 
-    public void AddState(State newState)
+    public void ChangeToState<T>()
     {
-        states.Add(newState);
-        newState.OnAddToStateMachine(this);
+        foreach (State s in states)
+        {
+            if (s is T)
+            {
+
+                if (currentState != null)
+                    currentState.Exit();
+                currentState = s;
+                break;
+            }
+        }
+
+        currentState.Enter();
     }
 
     public abstract class State
